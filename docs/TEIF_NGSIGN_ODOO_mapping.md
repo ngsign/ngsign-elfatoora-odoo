@@ -5,7 +5,11 @@ It aligns the **NGSign JSON** payload (PDF 1), the official **TEIF XML** structu
 ### ⚠️ Critical Odoo Prerequisites
 1.  **Tax Mapping:** You must add a field (e.g., `teif_code`) to `account.tax` to map Odoo taxes to TEIF codes (I-16).
 2.  **Payment Mapping:** You must add a field to `account.payment.term` or use a dictionary to map Odoo terms to TEIF Condition codes (I-12).
-3.  **Fiscal ID Validation:** Odoo's `vat` field must be cleaned (remove 'TN' prefix) and validated against the 7-digit+key regex before sending.
+3.  **Fiscal ID Validation:** Odoo's `vat` field must be cleaned (remove 'TN' prefix) before sending.
+    ⚠️ The 7-digit+key regex is **not** enforced by TTN in practice — invoices whose customer
+    VAT was `12345678910` or `12345678L` have been signed and returned a TTN reference. The
+    module therefore only rejects values that cannot be a Matricule at all (separators, or a
+    length outside 8–13), and only for Tunisian customers. See `docs/data_validation.md`.
 
 ---
 
@@ -25,7 +29,7 @@ It aligns the **NGSign JSON** payload (PDF 1), the official **TEIF XML** structu
 
 | NGSign JSON Field | TEIF XML Element | Odoo 18 Equivalent | Logic / Constraint |
 | :--- | :--- | :--- | :--- |
-| `documentIdentifier` | `Bgm/DocumentIdentifier` | `account.move.name` | Max 70 chars. |
+| `documentIdentifier` | `Bgm/DocumentIdentifier` | `account.move.name` | Max 70 chars. The JSON schema also declares a pattern forbidding `/` and capping at 30 chars — **not enforced by TTN**: `INV/2026/00001` is signed. |
 | `invoiceDate` | `Dtm/DateText` (I-31) | `account.move.invoice_date` | **Unix Timestamp (Milliseconds)**<br>Example: `1754348400000`. |
 | `documentType` | `Bgm/DocumentType` | `account.move.move_type` | Same mapping as wrapper `type`. |
 | `clientIdentifier` | `Nad/PartnerIdentifier` | `res.partner.vat` | **Strict Regex:** `[0-9]{7}[A-Z]...`<br>Strip country code (e.g., remove 'TN'). |
