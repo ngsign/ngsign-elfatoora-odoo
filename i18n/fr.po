@@ -350,7 +350,7 @@ msgstr "• L'adresse du partenaire (description) dépasse 500 caractères (actu
 #: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
 #, python-format
 msgid "• Street exceeds 35 characters (current: %d)"
-msgstr "• La "rue" de l'adresse du partenaire dépasse 35 caractères (actuel : %d)"
+msgstr "• La « rue » de l'adresse du partenaire dépasse 35 caractères (actuel : %d)"
 
 #. module: ngsign_einvoice_odoo
 #. odoo-python
@@ -499,3 +499,1139 @@ msgstr "Supprimer e-Facture Test"
 #: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_move_form_inherit_ngsign
 msgid "Are you sure you want to delete this test transaction? This will remove all NGSign data and signed files."
 msgstr "Êtes-vous sûr de vouloir supprimer cette transaction de test ? Cela supprimera toutes les données NGSign et les fichiers signés."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "\"%(sent)s\" is sent as the customer name, but the company of \"%(contact)s\" is \"%(company)s\"."
+msgstr "« %(sent)s » est envoyé comme nom du client, alors que la société de « %(contact)s » est « %(company)s »."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "\"%(value)s\" contains characters other than letters and digits. The Matricule Fiscal is sent to TTN as it is written here."
+msgstr "« %(value)s » contient des caractères autres que des lettres et des chiffres. Le matricule fiscal est envoyé à TTN tel qu'il est saisi ici."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "\"%(value)s\" is %(len)s characters long: a Matricule Fiscal has %(min)s characters (7 digits and a key letter), up to %(max)s with the VAT code, the category and the establishment number."
+msgstr "« %(value)s » comporte %(len)s caractères : un matricule fiscal en compte %(min)s (7 chiffres et une lettre clé), jusqu'à %(max)s avec le code TVA, la catégorie et le numéro d'établissement."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(errors)s blocking problem(s) and %(warnings)s warning(s) for the e-invoice:"
+msgstr "%(errors)s problème(s) bloquant(s) et %(warnings)s avertissement(s) pour la facture électronique :"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(errors)s blocking problem(s) for the e-invoice:"
+msgstr "%(errors)s problème(s) bloquant(s) pour la facture électronique :"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(field)s exceeds %(max)s characters (currently %(len)s)."
+msgstr "Le champ « %(field)s » dépasse %(max)s caractères (actuellement %(len)s)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(field)s has an invalid format: \"%(value)s\"."
+msgstr "Le format du champ « %(field)s » est invalide : « %(value)s »."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(field)s is required."
+msgstr "Le champ « %(field)s » est obligatoire."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(field)s must be a number."
+msgstr "Le champ « %(field)s » doit être un nombre."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(field)s must be a whole number."
+msgstr "Le champ « %(field)s » doit être un nombre entier."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(field)s must contain at least %(min)s character(s)."
+msgstr "Le champ « %(field)s » doit contenir au moins %(min)s caractère(s)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(warnings)s warning(s) for the e-invoice:"
+msgstr "%(warnings)s avertissement(s) pour la facture électronique :"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid ""
+"<strong>The data is compliant.</strong>\n"
+"                    No problem was found in the data that will be sent to NGSign."
+msgstr ""
+"<strong>Les données sont conformes.</strong>\n"
+"                    Aucun problème n'a été détecté dans les données qui seront envoyées à NGSign."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "<strong>The invoice cannot be signed as is.</strong>"
+msgstr "<strong>La facture ne peut pas être signée en l'état.</strong>"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid ""
+"<strong>Warnings only.</strong>\n"
+"                    The invoice can be sent, but the data below will be altered or is\n"
+"                    incomplete. Fix it, or continue anyway."
+msgstr ""
+"<strong>Avertissements uniquement.</strong>\n"
+"                    La facture peut être envoyée, mais les données ci-dessous seront modifiées\n"
+"                    ou sont incomplètes. Corrigez-les, ou continuez malgré tout."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__path
+msgid "API field"
+msgstr "Champ API"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Bank"
+msgstr "Banque"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Bank account number"
+msgstr "Numéro de compte bancaire"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Bank account number (payment)"
+msgstr "Numéro de compte bancaire (paiement)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Bank name"
+msgstr "Nom de la banque"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Bank name (payment)"
+msgstr "Nom de la banque (paiement)"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_validation_issue__severity__error
+msgid "Blocking"
+msgstr "Bloquant"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid ""
+"Cannot generate the e-invoice for %(invoice)s.\n"
+"\n"
+"The following data is missing or invalid:\n"
+"\n"
+"%(issues)s"
+msgstr ""
+"Impossible de générer la facture électronique pour %(invoice)s.\n"
+"\n"
+"Les données suivantes sont manquantes ou invalides :\n"
+"\n"
+"%(issues)s"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "Check Again"
+msgstr "Vérifier à nouveau"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_move_form_inherit_ngsign
+msgid "Check e-Invoice Data"
+msgstr "Vérifier les données e-facture"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Check the 'Tax ID' of the contact (e.g. 1234567A or 1234567AAM000)."
+msgstr "Vérifiez le « N° TVA » du contact (par ex. 1234567A ou 1234567AAM000)."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_move_form_inherit_ngsign
+msgid "Check the data that will be sent to NGSign / TTN and list what has to be corrected"
+msgstr "Vérifier les données qui seront envoyées à NGSign / TTN et lister ce qui doit être corrigé"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_issue_form
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Company Tax ID (Matricule Fiscal)"
+msgstr "Matricule fiscal de la société"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_developer_settings__create_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__create_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__create_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_template_settings__create_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_ttn_layout_settings__create_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__create_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_developer_settings__create_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__create_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__create_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_template_settings__create_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_ttn_layout_settings__create_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__create_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Currency"
+msgstr "Devise"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__value
+msgid "Current value"
+msgstr "Valeur actuelle"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Customer Tax ID (Matricule Fiscal)"
+msgstr "Matricule fiscal du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Customer ZIP"
+msgstr "Code postal du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Customer address"
+msgstr "Adresse du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Customer city"
+msgstr "Ville du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Customer country"
+msgstr "Pays du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Customer email"
+msgstr "E-mail du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Customer name"
+msgstr "Nom du client"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Customer street"
+msgstr "Rue du client"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_developer_settings__display_name
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__display_name
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__display_name
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_template_settings__display_name
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_ttn_layout_settings__display_name
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__display_name
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Document type"
+msgstr "Type de document"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__error_count
+msgid "Error Count"
+msgstr "Nombre d'erreurs"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__label
+msgid "Field"
+msgstr "Champ"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Fill in the description of the invoice line (500 characters max)."
+msgstr "Renseignez la description de la ligne de facture (500 caractères maximum)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Fill the 'Tax ID' field of the customer with its Matricule Fiscal (e.g. 1234567A or 1234567AAM000). The 'TN' prefix is removed automatically."
+msgstr "Renseignez le champ « N° TVA » du client avec son matricule fiscal (par ex. 1234567A ou 1234567AAM000). Le préfixe « TN » est supprimé automatiquement."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__has_errors
+msgid "Has Errors"
+msgstr "Contient des erreurs"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__move_id
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__move_id
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__move_id
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Invoice date"
+msgstr "Date de facturation"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Invoice lines"
+msgstr "Lignes de facture"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Invoice note (Terms & Conditions)"
+msgstr "Note de facture (conditions générales)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Invoice number"
+msgstr "Numéro de facture"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Invoice the company directly, or attach the contact to it, so that the name sent matches the Matricule Fiscal."
+msgstr "Facturez directement la société, ou rattachez-lui le contact, afin que le nom envoyé corresponde au matricule fiscal."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__move_ids
+msgid "Invoices"
+msgstr "Factures"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__is_clean
+msgid "Is Clean"
+msgstr "Sans anomalie"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_issue_form
+msgid "Issue"
+msgstr "Anomalie"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__issue_ids
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_issue_list
+msgid "Issues"
+msgstr "Anomalies"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "It is not sent in the e-invoice, but TTN checks the signer against the Matricule Fiscal registered for your certificate."
+msgstr "Il n'est pas envoyé dans la facture électronique, mais TTN contrôle le signataire par rapport au matricule fiscal enregistré pour votre certificat."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_developer_settings__write_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__write_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__write_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_template_settings__write_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_ttn_layout_settings__write_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__write_uid
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_developer_settings__write_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__write_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__write_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_template_settings__write_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_ttn_layout_settings__write_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__write_date
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Line %(number)s (%(name)s)"
+msgstr "Ligne %(number)s (%(name)s)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Line description"
+msgstr "Description de la ligne"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Line tax code"
+msgstr "Code de taxe de la ligne"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Line tax rate"
+msgstr "Taux de taxe de la ligne"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Line total (excl. tax)"
+msgstr "Total de la ligne (HT)"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model,name:ngsign_einvoice_odoo.model_ngsign_validation_result
+msgid "NGSign e-Invoice Data Check"
+msgstr "Contrôle des données de la facture électronique NGSign"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model,name:ngsign_einvoice_odoo.model_ngsign_validation_issue
+msgid "NGSign e-Invoice Data Issue"
+msgstr "Anomalie de données de la facture électronique NGSign"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_bank_statement_line__ngsign_validation_has_errors
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_move__ngsign_validation_has_errors
+msgid "Ngsign Validation Has Errors"
+msgstr "Le contrôle NGSign comporte des erreurs"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Only customer invoices (I-11) and credit notes (I-12) can be sent to TTN."
+msgstr "Seules les factures clients (I-11) et les factures d'avoir (I-12) peuvent être envoyées à TTN."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Open the payment term and set its 'TEIF Condition Code'."
+msgstr "Ouvrez la condition de paiement et renseignez son « Code condition TEIF »."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_issue_form
+msgid "Open the record"
+msgstr "Ouvrir la fiche"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_issue_list
+msgid "Open the record to fix"
+msgstr "Ouvrir la fiche à corriger"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Open the tax in Accounting > Configuration > Taxes and set its 'TEIF Tax Code'."
+msgstr "Ouvrez la taxe dans Comptabilité > Configuration > Taxes et renseignez son « Code taxe TEIF »."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Payment condition code"
+msgstr "Code de condition de paiement"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Payment means code"
+msgstr "Code de moyen de paiement"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Payment terms"
+msgstr "Conditions de paiement"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__message
+msgid "Problem"
+msgstr "Problème"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_account_bank_statement_line__ngsign_validation_message
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_account_move__ngsign_validation_message
+msgid "Problems detected in the data that would be sent to NGSign."
+msgstr "Problèmes détectés dans les données qui seraient envoyées à NGSign."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_res_partner__ngsign_validation_message
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_res_users__ngsign_validation_message
+msgid "Problems that would prevent this contact from being used on a Tunisian electronic invoice."
+msgstr "Problèmes qui empêcheraient d'utiliser ce contact sur une facture électronique tunisienne."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_product_product__ngsign_validation_message
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_product_template__ngsign_validation_message
+msgid "Problems that would show up when this product is invoiced on a Tunisian electronic invoice."
+msgstr "Problèmes qui apparaîtraient lorsque cet article est facturé sur une facture électronique tunisienne."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_res_company__ngsign_validation_message
+msgid "Problems with the identity of the company for Tunisian electronic invoicing."
+msgstr "Problèmes liés à l'identité de la société pour la facturation électronique tunisienne."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Product internal reference"
+msgstr "Référence interne de l'article"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Put the whole description on a single line if the rest matters."
+msgstr "Mettez toute la description sur une seule ligne si le reste est important."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__res_name
+msgid "Record"
+msgstr "Fiche"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__res_id
+msgid "Record ID"
+msgstr "ID de la fiche"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__res_model
+msgid "Record Model"
+msgstr "Modèle de la fiche"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Related document reference"
+msgstr "Référence du document lié"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Related document reference type"
+msgstr "Type de référence du document lié"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Rename the unit of measure or use a shorter one."
+msgstr "Renommez l'unité de mesure ou utilisez-en une plus courte."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Rename the unit of measure to 8 characters at most (e.g. 'Units' -> 'U')."
+msgstr "Renommez l'unité de mesure en 8 caractères maximum (par ex. « Unités » -> « U »)."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__result_id
+msgid "Result"
+msgstr "Résultat"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__resume_context
+msgid "Resume Context"
+msgstr "Contexte de reprise"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__resume_signature
+msgid "Resume Signature"
+msgstr "Reprendre la signature"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__code
+msgid "Rule"
+msgstr "Règle"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Set the 'Bank' of the account on the contact."
+msgstr "Renseignez la « Banque » du compte sur le contact."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Set the 'Internal Reference' of the product (35 characters max)."
+msgstr "Renseignez la « Référence interne » de l'article (35 caractères maximum)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Set the 'Internal Reference' of the product."
+msgstr "Renseignez la « Référence interne » de l'article."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Set the 'Tax ID' of the company in Settings > Companies, and check it matches the Matricule declared to TTN for your certificate."
+msgstr "Renseignez le « N° TVA » de la société dans Paramètres > Sociétés, et vérifiez qu'il correspond au matricule déclaré à TTN pour votre certificat."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Set the Matricule Fiscal on the customer company: Odoo copies it to its contacts."
+msgstr "Renseignez le matricule fiscal sur la société cliente : Odoo le recopie sur ses contacts."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__severity
+msgid "Severity"
+msgstr "Gravité"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Shorten the description of the line."
+msgstr "Raccourcissez la description de la ligne."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Shorten the note in the 'Terms and conditions' field of the invoice."
+msgstr "Raccourcissez la note dans le champ « Conditions générales » de la facture."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Shorten the street or move the end of it to the 'Street 2' field."
+msgstr "Raccourcissez la rue ou déplacez-en la fin dans le champ « Rue 2 »."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "Sign Anyway"
+msgstr "Signer quand même"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_payment_term__teif_code
+msgid "TEIF Condition Code"
+msgstr "Code condition TEIF"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_tax__teif_code
+msgid "TEIF Tax Code"
+msgstr "Code taxe TEIF"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "TTN accepts 20 characters at most: use the RIB (20 digits) rather than the IBAN, and remove spaces."
+msgstr "TTN accepte 20 caractères au maximum : utilisez le RIB (20 chiffres) plutôt que l'IBAN, et supprimez les espaces."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Tax ID (Matricule Fiscal)"
+msgstr "Matricule fiscal"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Tax code"
+msgstr "Code de taxe"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Tax rate"
+msgstr "Taux de taxe"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The Tax ID (Matricule Fiscal) of the company \"%(company)s\" is not set."
+msgstr "Le matricule fiscal de la société « %(company)s » n'est pas renseigné."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The Tax ID of the company \"%(company)s\" (\"%(value)s\") contains characters other than letters and digits."
+msgstr "Le matricule fiscal de la société « %(company)s » (« %(value)s ») contient des caractères autres que des lettres et des chiffres."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The Tax ID of the company \"%(company)s\" (\"%(value)s\") does not look like a Matricule Fiscal: 7 digits followed by a key letter are expected (e.g. 1234567A or 1234567AAM000)."
+msgstr "Le matricule fiscal de la société « %(company)s » (« %(value)s ») ne ressemble pas à un matricule fiscal : 7 chiffres suivis d'une lettre clé sont attendus (par ex. 1234567A ou 1234567AAM000)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The Tax ID of the contact \"%(contact)s\" (\"%(contact_vat)s\") differs from the one of its company \"%(company)s\" (\"%(company_vat)s\"). The contact's one is sent."
+msgstr "Le matricule fiscal du contact « %(contact)s » (« %(contact_vat)s ») diffère de celui de sa société « %(company)s » (« %(company_vat)s »). C'est celui du contact qui est envoyé."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The bank account \"%(acc)s\" is not linked to a bank; \"Bank\" would be sent as the institution name."
+msgstr "Le compte bancaire « %(acc)s » n'est rattaché à aucune banque ; « Bank » serait envoyé comme nom de l'institution."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "The currency code must be an ISO 4217 code such as TND."
+msgstr "Le code devise doit être un code ISO 4217 tel que TND."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The description is %(len)s characters long: only the first 500 will be sent to TTN."
+msgstr "La description comporte %(len)s caractères : seuls les 500 premiers seront envoyés à TTN."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The description spans several lines: only the first line (\"%(first)s\") will be sent to TTN."
+msgstr "La description s'étend sur plusieurs lignes : seule la première ligne (« %(first)s ») sera envoyée à TTN."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The e-invoice data could not be generated: %s"
+msgstr "Les données de la facture électronique n'ont pas pu être générées : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "The full address of the customer (street, zip, city, country) is required."
+msgstr "L'adresse complète du client (rue, code postal, ville, pays) est obligatoire."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The invoice date is not set; today's date would be sent instead."
+msgstr "La date de facturation n'est pas renseignée ; la date du jour serait envoyée à la place."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "The invoice must contain at least one product line (sections and notes are not sent)."
+msgstr "La facture doit contenir au moins une ligne d'article (les sections et les notes ne sont pas envoyées)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The invoice note contains HTML formatting; the tags are sent as-is in the e-invoice comments."
+msgstr "La note de facture contient de la mise en forme HTML ; les balises sont envoyées telles quelles dans les commentaires de la facture électronique."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The line carries %(count)s VAT taxes; only \"%(kept)s\" will be sent as the line VAT rate, the others as additional taxes."
+msgstr "La ligne porte %(count)s taxes de TVA ; seule « %(kept)s » sera envoyée comme taux de TVA de la ligne, les autres comme taxes supplémentaires."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The payment term \"%(term)s\" has no TEIF condition code; \"I-121\" (immediate payment) would be sent instead."
+msgstr "La condition de paiement « %(term)s » n'a pas de code condition TEIF ; « I-121 » (paiement immédiat) serait envoyé à la place."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The payment term \"%(term)s\" uses the code %(code)s, which the current NGSign schema does not list (I-121 to I-124). It may be rejected by TTN."
+msgstr "La condition de paiement « %(term)s » utilise le code %(code)s, qui ne figure pas dans le schéma NGSign actuel (I-121 à I-124). Il peut être rejeté par TTN."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The product has no internal reference: \"N/A\" will be sent as the item code."
+msgstr "L'article n'a pas de référence interne : « N/A » sera envoyé comme code article."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The sum of the e-invoice lines (%(lines)s) differs from the invoice total excluding tax (%(total)s). TTN may reject the invoice."
+msgstr "La somme des lignes de la facture électronique (%(lines)s) diffère du total hors taxes de la facture (%(total)s). TTN peut rejeter la facture."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The tax \"%(tax)s\" has no TEIF code; it would be sent as \"I-1606\" (other tax)."
+msgstr "La taxe « %(tax)s » n'a pas de code TEIF ; elle serait envoyée comme « I-1606 » (autre taxe)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The tax \"%(tax)s\" uses the code %(code)s, which the current NGSign schema does not list (only I-1601 to I-1603 and I-160 to I-169 are documented). It may be rejected by TTN."
+msgstr "La taxe « %(tax)s » utilise le code %(code)s, qui ne figure pas dans le schéma NGSign actuel (seuls I-1601 à I-1603 et I-160 à I-169 sont documentés). Il peut être rejeté par TTN."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The unit of measure \"%(uom)s\" is longer than 8 characters and will be shortened to \"%(sent)s\"."
+msgstr "L'unité de mesure « %(uom)s » dépasse 8 caractères et sera raccourcie en « %(sent)s »."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "This usually comes from global discounts or from lines excluded from the e-invoice."
+msgstr "Cela vient généralement des remises globales ou de lignes exclues de la facture électronique."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Total amount in letters"
+msgstr "Montant total en lettres"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Total excluding tax"
+msgstr "Total hors taxes"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Unit of measure"
+msgstr "Unité de mesure"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Unit price"
+msgstr "Prix unitaire"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Use plain text in the 'Terms and conditions' field."
+msgstr "Utilisez du texte brut dans le champ « Conditions générales »."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "VAT"
+msgstr "TVA"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_validation_issue__severity__warning
+msgid "Warning"
+msgstr "Avertissement"
+
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__warning_count
+msgid "Warning Count"
+msgstr "Nombre d'avertissements"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__hint
+msgid "What to do"
+msgstr "Que faire"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_issue__context_label
+msgid "Where"
+msgstr "Où"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Without an email address NGSign cannot deliver the signed invoice to your customer."
+msgstr "Sans adresse e-mail, NGSign ne peut pas transmettre la facture signée à votre client."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Write the Matricule Fiscal without separators or spaces (1234567AAM000, not 1234567/A/A/M/000)."
+msgstr "Saisissez le matricule fiscal sans séparateurs ni espaces (1234567AAM000, et non 1234567/A/A/M/000)."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "and"
+msgstr "et"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "and %(count)s more..."
+msgstr "et %(count)s autre(s)..."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "blocking problem(s)"
+msgstr "problème(s) bloquant(s)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validation_wizard.py:0
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_bank_statement_line__ngsign_validation_message
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_move__ngsign_validation_message
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_product_product__ngsign_validation_message
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_product_template__ngsign_validation_message
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_res_company__ngsign_validation_message
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_res_partner__ngsign_validation_message
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_res_users__ngsign_validation_message
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "e-Invoice Data Check"
+msgstr "Contrôle des données de la facture électronique"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "e-Invoice data"
+msgstr "Données de la facture électronique"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "warning(s)"
+msgstr "avertissement(s)"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "were found. Fix them in Odoo, then click <em>Check Again</em>."
+msgstr "ont été détectés. Corrigez-les dans Odoo, puis cliquez sur <em>Vérifier à nouveau</em>."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "\"%(name)s\" is not a Tunisian customer (%(country)s): its Tax ID \"%(value)s\" is sent to TTN as it is, without any format check."
+msgstr "« %(name)s » n'est pas un client tunisien (%(country)s) : son matricule fiscal « %(value)s » est envoyé à TTN tel quel, sans contrôle de format."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(count)s critical"
+msgstr "%(count)s critique(s)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(count)s information"
+msgstr "%(count)s information(s)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "%(count)s warning(s)"
+msgstr "%(count)s avertissement(s)"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid ". Fix the critical ones in Odoo, then click <em>Check Again</em>."
+msgstr ". Corrigez les points critiques dans Odoo, puis cliquez sur <em>Vérifier à nouveau</em>."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid ""
+"<strong>For your information.</strong>\n"
+"                    Nothing blocks the signature: the points below are only there for\n"
+"                    you to check."
+msgstr ""
+"<strong>Pour information.</strong>\n"
+"                    Rien ne bloque la signature : les points ci-dessous sont uniquement là\n"
+"                    pour que vous les vérifiiez."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Check yourself that this Tax ID is the identifier TTN expects for a foreign customer."
+msgstr "Vérifiez vous-même que ce matricule fiscal est bien l'identifiant attendu par TTN pour un client étranger."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-javascript
+#: code:addons/ngsign_einvoice_odoo/static/src/js/ngsign_action.js:0
+msgid "Checking your eInvoice(s)"
+msgstr "Contrôle de vos e-factures"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_validation_issue__severity__error
+msgid "Critical"
+msgstr "Critique"
+
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__error_count
+msgid "Critical Count"
+msgstr "Nombre de points critiques"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_validation_result__info_count
+msgid "Info Count"
+msgstr "Nombre d'informations"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_validation_issue__severity__info
+msgid "Information"
+msgstr "Information"
+
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model,name:ngsign_einvoice_odoo.model_ngsign_validator
+msgid "NGSign e-Invoice Data Validator"
+msgstr "Validateur de données e-facture NGSign"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid ""
+"Only customer invoices and credit notes can be sent to NGSign.\n"
+"The following documents are not: %s"
+msgstr ""
+"Seules les factures clients et les factures d'avoir peuvent être envoyées à NGSign.\n"
+"Les documents suivants n'en sont pas : %s"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "critical problem(s)"
+msgstr "problème(s) critique(s)"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "e-Invoice data check: %(details)s"
+msgstr "Contrôle des données e-facture : %(details)s"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_validation_result_form
+msgid "information"
+msgstr "information"
+
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "e-Invoice data check"
+msgstr "Contrôle des données e-facture"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Invalid Tunisian Tax ID"
+msgstr "MF Tunisien invalide"
+
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "Missing Tax ID"
+msgstr "MF manquant"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "The value is missing."
+msgstr "La valeur est manquante."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Exceeds %(max)s characters (currently %(len)s)."
+msgstr "Dépasse %(max)s caractères (actuellement %(len)s)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Must contain at least %(min)s character(s)."
+msgstr "Doit contenir au moins %(min)s caractère(s)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Invalid format: \"%(value)s\"."
+msgstr "Format invalide : « %(value)s »."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Must be a number."
+msgstr "Doit être un nombre."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Must be a whole number."
+msgstr "Doit être un nombre entier."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "Foreign Tax ID"
+msgstr "Matricule fiscal étranger"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_spec.py:0
+msgid "The field \"%(field)s\" does not exist."
+msgstr "Le champ « %(field)s » est inexistant."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
+msgid "\"%(value)s\" is %(len)s characters long: a Tunisian Matricule Fiscal has %(min)s characters (7 digits and a key letter), up to %(max)s with the VAT code, the category and the establishment number."
+msgstr "« %(value)s » comporte %(len)s caractères : un matricule fiscal Tunisien en compte %(min)s (7 chiffres et une lettre clé), jusqu'à %(max)s avec le code TVA, la catégorie et le numéro d'établissement."

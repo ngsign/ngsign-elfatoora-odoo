@@ -3,6 +3,26 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    ngsign_validation_message = fields.Html(
+        string='e-Invoice Data Check',
+        compute='_compute_ngsign_validation_message',
+        help="Problems that would prevent this contact from being used on a "
+             "Tunisian electronic invoice."
+    )
+
+    @api.depends('vat', 'name', 'street', 'city', 'zip', 'country_id', 'email',
+                 'customer_rank', 'parent_id')
+    def _compute_ngsign_validation_message(self):
+        validator = self.env['ngsign.validator']
+        for partner in self:
+            partner.ngsign_validation_message = False
+            # Only customers end up in an e-invoice: do not nag on other contacts.
+            if not (partner.customer_rank or partner.parent_id.customer_rank):
+                continue
+            partner.ngsign_validation_message = validator.issues_to_html(
+                validator.validate_record(partner)
+            )
+
     ngsign_notify_owner = fields.Boolean(
         string='Notify Owner (NGSign)', 
         compute='_compute_ngsign_notify_owner', 

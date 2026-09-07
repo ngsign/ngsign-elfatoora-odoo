@@ -35,6 +35,14 @@
                         confirm="Are you sure you want to delete this test transaction? This will remove all NGSign data and signed files."/>
                 <button name="action_generate_debug_json" string="Generate Debug JSON" type="object"
                         invisible="not ngsign_show_debug_json_button"/>
+                <button name="action_ngsign_check_data" string="Check e-Invoice Data" type="object"
+                        invisible="move_type not in ('out_invoice', 'out_refund') or ngsign_status in ('pending', 'pending_signature', 'TTN Signed', 'signed_ngsign')"
+                        help="Check the data that will be sent to NGSign / TTN and list what has to be corrected"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div invisible="not ngsign_validation_message">
+                    <field name="ngsign_validation_message" nolabel="1" readonly="1"/>
+                </div>
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="eInvoice Info" name="einvoice_info">

@@ -1,7 +1,21 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
+
+    ngsign_validation_message = fields.Html(
+        string='e-Invoice Data Check',
+        compute='_compute_ngsign_validation_message',
+        help="Problems with the identity of the company for Tunisian electronic invoicing."
+    )
+
+    @api.depends('vat', 'name')
+    def _compute_ngsign_validation_message(self):
+        validator = self.env['ngsign.validator']
+        for company in self:
+            company.ngsign_validation_message = validator.issues_to_html(
+                validator.validate_record(company)
+            )
 
     ngsign_qr_position_type = fields.Selection([
         ('custom', 'Custom Coordinates'),

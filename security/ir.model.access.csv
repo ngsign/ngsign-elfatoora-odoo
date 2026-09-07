@@ -4,3 +4,5 @@ access_ngsign_developer_settings,ngsign.developer.settings,model_ngsign_develope
 access_ngsign_ttn_layout_settings,ngsign.ttn.layout.settings,model_ngsign_ttn_layout_settings,base.group_user,1,1,1,1
 access_ngsign_sign_options_wizard,ngsign.sign.options.wizard,model_ngsign_sign_options_wizard,account.group_account_invoice,1,1,1,1
 access_ngsign_pds_options_wizard,ngsign.pds.options.wizard,model_ngsign_pds_options_wizard,account.group_account_invoice,1,1,1,1
+access_ngsign_validation_result,ngsign.validation.result,model_ngsign_validation_result,account.group_account_invoice,1,1,1,1
+access_ngsign_validation_issue,ngsign.validation.issue,model_ngsign_validation_issue,account.group_account_invoice,1,1,1,1

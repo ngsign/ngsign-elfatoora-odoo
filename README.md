@@ -12,6 +12,7 @@ This module integrates Odoo with the **NGSign** platform to enable electronic in
 - **TTN Integration**: Submits signed invoices to the Tunisie TradeNet (TTN) platform.
 - **Automatic PDF Enrichment**: Updates the invoice PDF with the TTN unique reference and QR code (2D-Doc) upon successful signing.
 - **Status Tracking**: Tracks the status of invoices (Pending, Signed, Rejected) directly within Odoo.
+- **Data Validation**: Checks the invoice data against the NGSign/TEIF constraints *before* sending it, and tells the user which record and which field to correct.
 
 ## Installation
 
@@ -75,6 +76,30 @@ This module integrates Odoo with the **NGSign** platform to enable electronic in
     -   The signed PDF will be automatically downloaded and attached
 
 **Note**: You can also click the **"Open Signing Page"** button at any time to reopen the PDS if needed.
+
+### Checking the data before signing
+
+The data sent to NGSign must respect the TEIF constraints (mandatory fields, maximum
+lengths, code formats). The module checks them locally so problems are fixed in Odoo
+instead of coming back as an API rejection.
+
+-   **Automatic check on signing**: clicking **"Sign with NGSign"** first validates the
+    invoice. If something is wrong, the **e-Invoice Data Check** dialog opens instead of
+    sending. Each line states the problem, what to do, and opens the record to fix
+    (contact, product, tax, payment term, bank account) with one click.
+    -   *Blocking* problems must be corrected; use **Check Again** once done.
+    -   *Warnings* (truncated text, missing email, ...) can be acknowledged with
+        **Sign Anyway**.
+-   **Manual check**: the **"Check e-Invoice Data"** button in the invoice header runs the
+    same check at any time, on one invoice or on a selection of invoices.
+-   **Banners**: invoices, customer contacts and products display a summary of their own
+    problems directly on the form.
+-   **Debug JSON**: the generated JSON also contains a `_validation` section listing the
+    detected problems (this key is not part of the API payload).
+
+All the constraints live in `models/ngsign_spec.py` (one entry per API field, with its
+maximum length / pattern and the Odoo field it comes from), so updating the module for a
+new API version means editing that single file.
 
 ### Debugging
 1.  **Enable Debug Mode**: Go to **Accounting > Configuration > Settings > NGSign e-invoice** and check **Enable Debug Button**.

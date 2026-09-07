@@ -8,6 +8,7 @@ from odoo import models, fields, api, _
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
 from .ngsign_client import NGSignClient
+from .ngsign_spec import ERROR as NGSIGN_ERROR, INTERRUPTING_SEVERITIES as NGSIGN_INTERRUPTING
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -99,8 +100,10 @@ class AccountMove(models.Model):
                     if not self.ngsign_last_check:
                         should_check = True
                     else:
-                        # Check if last check was more than 60 seconds ago
-                        diff = fields.Datetime.now() - self.ngsign_last_check
+                        # Check if last check was more than 60 seconds ago.
+                        # NB: `fields` is the read() argument here, it shadows the
+                        # odoo.fields module - use datetime directly.
+                        diff = datetime.now() - self.ngsign_last_check
                         if diff > timedelta(seconds=60):
                             should_check = True
                     
@@ -133,6 +136,37 @@ class AccountMove(models.Model):
             move.ngsign_show_debug_json_button = show_debug
             move.ngsign_show_transaction_uuid = show_trans_uuid
             move.ngsign_show_invoice_uuid = show_inv_uuid
+
+    def _ngsign_payload_lines(self):
+        """Invoice lines actually sent to NGSign (sections and notes excluded).
+
+        Single source of truth so that the payload builder and the validator
+        always talk about the same lines (and the same line numbers).
+        """
+        self.ensure_one()
+        return self.invoice_line_ids.filtered(
+            lambda l: l.display_type not in ('line_section', 'line_note')
+        )
+
+    def _ngsign_resolve_bank_account(self):
+        """Bank account sent in the e-invoice.
+
+        Priority: 1. invoice bank account, 2. journal bank account,
+                  3. first bank account of the company.
+        """
+        self.ensure_one()
+        # sudo() so the details can be read whatever the user's permissions are
+        bank_account = self.partner_bank_id.sudo()
+
+        if not bank_account and self.journal_id.bank_account_id:
+            bank_account = self.journal_id.bank_account_id.sudo()
+
+        if not bank_account:
+            company_banks = self.company_id.partner_id.bank_ids.sudo()
+            if company_banks:
+                bank_account = company_banks[0]
+
+        return bank_account
 
     def _get_ngsign_client(self):
         params = self.env['ir.config_parameter'].sudo()
@@ -298,7 +332,7 @@ class AccountMove(models.Model):
         # 2. Items Mapping
         items = []
         # In Odoo 16+, display_type can be 'product'. We want to exclude sections and notes.
-        for line in self.invoice_line_ids.filtered(lambda l: l.display_type not in ('line_section', 'line_note')):
+        for line in self._ngsign_payload_lines():
             # VAT Rate and Taxes Logic
             # 1. Identify Primary VAT (I-1602)
             # 2. All other taxes (including secondary VATs or non-VATs) go to 'taxes' list
@@ -394,21 +428,7 @@ class AccountMove(models.Model):
         #           2. Journal's bank account (if set)
         #           3. Company's first bank account
         
-        # Use sudo() to ensure we can read bank account details regardless of user permissions
-        bank_account = self.partner_bank_id.sudo()
-        
-        _logger.info(f"NGSign Debug: partner_bank_id={bank_account}, acc_number={bank_account.acc_number if bank_account else 'None'}")
-        
-        if not bank_account and self.journal_id.bank_account_id:
-            bank_account = self.journal_id.bank_account_id.sudo()
-            _logger.info(f"NGSign Debug: Fallback to Journal Bank={bank_account}")
-        
-        if not bank_account:
-             # Fallback to the first bank account of the company
-             company_banks = self.company_id.partner_id.bank_ids.sudo()
-             if company_banks:
-                 bank_account = company_banks[0]
-                 _logger.info(f"NGSign Debug: Fallback to Company Bank={bank_account}")
+        bank_account = self._ngsign_resolve_bank_account()
 
         _logger.info(f"NGSign Debug: Final Resolved Bank={bank_account}")
 
@@ -493,7 +513,7 @@ class AccountMove(models.Model):
         total_vat_amount = 0.0
         
         # Iterate over invoice lines to aggregate taxes
-        for line in self.invoice_line_ids.filtered(lambda l: l.display_type not in ('line_section', 'line_note')):
+        for line in self._ngsign_payload_lines():
             price_subtotal = line.price_subtotal
             
             for tax in line.tax_ids:
@@ -595,61 +615,94 @@ class AccountMove(models.Model):
         
         return invoice_upload
 
-    def _validate_partner_data_for_ngsign(self):
+    # ------------------------------------------------------------------
+    # e-Invoice data validation
+    # ------------------------------------------------------------------
+
+    ngsign_validation_message = fields.Html(
+        string='e-Invoice Data Check',
+        compute='_compute_ngsign_validation_message',
+        help="Problems detected in the data that would be sent to NGSign."
+    )
+    ngsign_validation_has_errors = fields.Boolean(compute='_compute_ngsign_validation_message')
+
+    @api.depends('partner_id', 'invoice_line_ids', 'invoice_date', 'name', 'state',
+                 'invoice_payment_term_id', 'partner_bank_id', 'narration', 'currency_id',
+                 'ngsign_status')
+    def _compute_ngsign_validation_message(self):
+        for move in self:
+            move.ngsign_validation_message = False
+            move.ngsign_validation_has_errors = False
+            if move.move_type not in ('out_invoice', 'out_refund'):
+                continue
+            # Once sent, the data is frozen on NGSign side: nothing to fix here.
+            if move.ngsign_status in ('pending', 'pending_signature', 'signed_ngsign',
+                                      'TTN Signed', 'CANCELLED'):
+                continue
+            if not move.id or not move.partner_id:
+                continue
+            try:
+                issues = self.env['ngsign.validator'].validate_move(move)
+            except Exception as e:  # pragma: no cover - the banner must never break the form
+                _logger.warning("NGSign: validation banner failed for %s: %s", move.name, e)
+                continue
+            move.ngsign_validation_message = self.env['ngsign.validator'].issues_to_html(issues)
+            move.ngsign_validation_has_errors = self.env['ngsign.validator'].has_errors(issues)
+
+    def action_ngsign_check_data(self):
+        """Open the detailed e-invoice data check for the selected invoices."""
+        if not self:
+            return False
+        return self.env['ngsign.validation.result'].open_for_moves(self)
+
+    def action_ngsign_check_before_send(self):
+        """Pre-flight check called by the client action BEFORE rendering the PDFs.
+
+        Returns the check wizard when the data must be looked at, otherwise
+        False, meaning "go ahead". Checking first avoids rendering PDFs (and
+        leaving them behind as attachments) for invoices that will not be sent.
         """
-        Validate partner data against NGSign e-invoice requirements.
-        Raises UserError with detailed messages if validation fails.
+        return self._ngsign_validation_action()
+
+    def _ngsign_validation_action(self, resume_signature=True):
+        """Return the wizard action if the data must be reviewed, else False.
+
+        Purely informational issues do not interrupt a signature: they are shown
+        on the invoice, on the contact and through the "Check e-Invoice Data"
+        button, but they are not a reason to stop the user.
+        """
+        if self.env.context.get('ngsign_skip_validation'):
+            return False
+        issues = self.env['ngsign.validator'].validate_moves(self)
+        if not any(issue['severity'] in NGSIGN_INTERRUPTING for issue in issues):
+            return False
+        return self.env['ngsign.validation.result'].open_for_moves(
+            self, issues=issues, resume_signature=resume_signature
+        )
+
+    def _validate_partner_data_for_ngsign(self):
+        """Deprecated: kept for backward compatibility.
+
+        The full check now lives in the ``ngsign.validator`` model; this wrapper
+        only raises on blocking problems, as it used to.
         """
         self.ensure_one()
-        
-        errors = []
-        partner = self.partner_id
-        
-        # Get the partner name (parent if exists, otherwise own name)
-        partner_name = partner.parent_id.name if partner.parent_id else partner.name
-        
-        # Clean VAT (strip country code)
-        partner_vat = (partner.vat or '').upper().replace('TN', '').strip()
-        
-        # 1. Validate partnerIdentifier (VAT)
-        if not partner_vat:
-            errors.append(_("• Partner VAT/Tax ID is required"))
-        elif len(partner_vat) > 35:
-            errors.append(_("• Partner VAT/Tax ID exceeds 35 characters (current: %d)") % len(partner_vat))
-        
-        # 2. Validate partnerName
-        if not partner_name:
-            errors.append(_("• Partner Name is required"))
-        elif len(partner_name) > 200:
-            errors.append(_("• Partner Name exceeds 200 characters (current: %d)") % len(partner_name))
-        
-        # 3. Validate address.description (contact_address)
-        address_description = partner.contact_address.replace('\n', ' ') if partner.contact_address else ''
-        if not address_description:
-            errors.append(_("• Partner Address (description) is required"))
-        elif len(address_description) > 500:
-            errors.append(_("• Partner Address (description) exceeds 500 characters (current: %d)") % len(address_description))
-        
-        # 4. Validate optional address fields (with max lengths)
-        if partner.street and len(partner.street) > 35:
-            errors.append(_("• Street exceeds 35 characters (current: %d)") % len(partner.street))
-        
-        if partner.city and len(partner.city) > 35:
-            errors.append(_("• City Name exceeds 35 characters (current: %d)") % len(partner.city))
-        
-        if partner.zip and len(partner.zip) > 17:
-            errors.append(_("• Postal Code exceeds 17 characters (current: %d)") % len(partner.zip))
-        
-        if partner.country_id and partner.country_id.code and len(partner.country_id.code) > 6:
-            errors.append(_("• Country Code exceeds 6 characters (current: %d)") % len(partner.country_id.code))
-        
-        # If there are errors, raise UserError with all details
-        if errors:
-            error_message = _("Cannot generate e-invoice for %s.\n\nThe following partner information is missing or invalid:\n\n%s\n\nPlease update the partner information and try again.") % (
-                self.name,
-                '\n'.join(errors)
-            )
-            raise UserError(error_message)
+        validator = self.env['ngsign.validator']
+        issues = [i for i in validator.validate_move(self) if i['severity'] == NGSIGN_ERROR]
+        if issues:
+            raise UserError(_(
+                "Cannot generate the e-invoice for %(invoice)s.\n\n"
+                "The following data is missing or invalid:\n\n%(issues)s"
+            ) % {'invoice': self.name, 'issues': validator.issues_to_text(issues)})
+
+    def _ngsign_cleanup_prepared_pdf(self):
+        """Remove the PDFs rendered by the prepare step for these invoices."""
+        for move in self:
+            self.env['ir.attachment'].search([
+                ('res_model', '=', 'account.move'),
+                ('res_id', '=', move.id),
+                ('name', '=', f"{move.name}_ngsign_prepare.pdf"),
+            ]).unlink()
 
     def action_ngsign_prepare(self):
         """
@@ -702,10 +755,25 @@ class AccountMove(models.Model):
         if not self:
             return
         
-        # Validate partner data for all invoices before proceeding
-        for move in self:
-            move._validate_partner_data_for_ngsign()
-            
+        # Guard against a batch selected in a generic journal entry list: the
+        # bulk action is bound to account.move as a whole.
+        not_invoices = self.filtered(lambda m: m.move_type not in ('out_invoice', 'out_refund'))
+        if not_invoices:
+            raise UserError(_(
+                "Only customer invoices and credit notes can be sent to NGSign.\n"
+                "The following documents are not: %s"
+            ) % ', '.join(not_invoices.mapped('display_name')))
+
+        # Check the data that is about to be sent. When something is wrong the
+        # user gets the detailed wizard instead of an API rejection; warnings
+        # can be acknowledged from there ("Sign Anyway").
+        validation_action = self._ngsign_validation_action()
+        if validation_action:
+            # Nothing is sent: drop the PDFs prepared for this attempt rather
+            # than leaving them attached to the invoices.
+            self._ngsign_cleanup_prepared_pdf()
+            return validation_action
+
         client = self._get_ngsign_client()
         params = self.env['ir.config_parameter'].sudo()
         
@@ -835,14 +903,7 @@ class AccountMove(models.Model):
                     move.write({'ngsign_status': 'error'})
             
             # Cleanup temporary attachments
-            for move in self:
-                attachment_name = f"{move.name}_ngsign_prepare.pdf"
-                attachments = self.env['ir.attachment'].search([
-                    ('res_model', '=', 'account.move'),
-                    ('res_id', '=', move.id),
-                    ('name', '=', attachment_name)
-                ])
-                attachments.unlink()
+            self._ngsign_cleanup_prepared_pdf()
             
             # For DigiGO/SSCD, return action to open PDS URL or send email
             _logger.info(f"NGSign: Checking redirection - cert_type={cert_type}, pds_url={pds_url}")
@@ -1108,6 +1169,22 @@ class AccountMove(models.Model):
                 'passphrase': passphrase,
                 'notifyOwner': notify_owner,
             }
+
+            # Not part of the API payload: the result of the local data check,
+            # so the JSON is self-explanatory when sent to support.
+            validator = self.env['ngsign.validator']
+            full_payload['_validation'] = [
+                {
+                    'severity': issue['severity'],
+                    'invoice': issue['move_name'],
+                    'where': issue['context_label'],
+                    'field': issue['label'],
+                    'apiField': issue['path'],
+                    'problem': issue['message'],
+                    'record': issue['res_name'],
+                }
+                for issue in validator.validate_moves(self)
+            ]
             if cc_email:
                 full_payload['ccEmail'] = cc_email
 

@@ -4,6 +4,8 @@ import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
 import { BlockUI } from "@web/core/ui/block_ui";
 
+const VALIDATION_MODEL = "ngsign.validation.result";
+
 async function actionSignNGSignJs(env, action) {
     const orm = env.services.orm;
     const ui = env.services.ui;
@@ -18,29 +20,70 @@ async function actionSignNGSignJs(env, action) {
         return;
     }
 
-    // Block UI with first message
-    ui.block({ message: _t("Preparing your eInvoice(s)") });
+    // ui.block/ui.unblock are counted by Odoo: keep them strictly balanced,
+    // otherwise the overlay stays up or the console fills with warnings.
+    let blocked = 0;
+    const block = (message) => {
+        ui.block({ message });
+        blocked++;
+    };
+    const unblock = () => {
+        if (blocked > 0) {
+            ui.unblock();
+            blocked--;
+        }
+    };
+
+    block(_t("Checking your eInvoice(s)"));
 
     try {
         const context = Object.assign({}, action.context || {});
+
+        // Step 0: check the data BEFORE rendering any PDF. A batch that has to be
+        // corrected then costs nothing and leaves no attachment behind.
+        const check = await orm.call("account.move", "action_ngsign_check_before_send",
+                                     [activeIds], { context: context });
+        if (check && check.res_model === VALIDATION_MODEL) {
+            // Release the overlay first: it would sit on top of the dialog.
+            unblock();
+            await actionService.doAction(check, {
+                // The user may have corrected records from the dialog.
+                onClose: () => actionService.doAction({ type: "ir.actions.client", tag: "reload" }),
+            });
+            return;
+        }
+
+        unblock();
+        block(_t("Preparing your eInvoice(s)"));
+
         // Step 1: Prepare (Generate PDFs)
         await orm.call("account.move", "action_ngsign_prepare", [activeIds], { context: context });
 
-        // Step 2: Send (Update message and call API)
-        // Note: ui.block replaces the message if called again? 
-        // In Odoo 16+ usually we unblock and block again or just update. 
-        // Let's try unblocking and blocking to be safe and ensure message update.
-        ui.unblock();
-        ui.block({ message: _t("Sending eInvoice(s) for signature") });
+        // Step 2: Send (update the message and call the API)
+        unblock();
+        block(_t("Sending eInvoice(s) for signature"));
 
         const result = await orm.call("account.move", "action_ngsign_send", [activeIds], { context: context });
 
-        // Show success notification if needed, or let the backend action handle it (e.g. reload)
-        notification.add(_t("Process completed successfully."), { type: "success" });
+        // Second line of defence: the backend gate can still return the check
+        // wizard (direct call, stale client, data changed since step 0).
+        const isValidation = result && result.res_model === VALIDATION_MODEL;
 
-        // If result contains an action (e.g. act_url for DigiGO), execute it
+        if (!isValidation) {
+            notification.add(_t("Process completed successfully."), { type: "success" });
+        }
+
+        // If result contains an action (e.g. act_url for DigiGO, or the data check), execute it
         if (result && result.type) {
-            await actionService.doAction(result);
+            unblock();
+            await actionService.doAction(result, isValidation ? {
+                onClose: () => actionService.doAction({ type: "ir.actions.client", tag: "reload" }),
+            } : {});
+        }
+
+        if (isValidation) {
+            // Keep the wizard open: reloading would close it.
+            return;
         }
 
         // Always reload the view to show updated status
@@ -48,12 +91,10 @@ async function actionSignNGSignJs(env, action) {
 
     } catch (error) {
         console.error("NGSign Error:", error);
-        // Error handling is usually done by RPC service, but we can add custom notification
-        // notification.add(_t("An error occurred during signing."), { type: "danger" });
         // Re-throw to let Odoo handle the error dialog
         throw error;
     } finally {
-        ui.unblock();
+        unblock();
     }
 }
 

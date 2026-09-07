@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_template_form_ngsign" model="ir.ui.view">
+        <field name="name">product.template.form.ngsign</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div invisible="not ngsign_validation_message">
+                    <field name="ngsign_validation_message" nolabel="1" readonly="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

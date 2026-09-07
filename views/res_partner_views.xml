@@ -5,6 +5,11 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div invisible="not ngsign_validation_message">
+                    <field name="ngsign_validation_message" nolabel="1" readonly="1"/>
+                </div>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="NGSign" name="ngsign_configuration">
                     <group>

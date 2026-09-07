@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ngsign_validation_issue_list" model="ir.ui.view">
+        <field name="name">ngsign.validation.issue.list</field>
+        <field name="model">ngsign.validation.issue</field>
+        <field name="arch" type="xml">
+            <list string="Issues" create="0" delete="0" edit="0"
+                  decoration-danger="severity == 'error'"
+                  decoration-warning="severity == 'warning'"
+                  decoration-muted="severity == 'info'">
+                <field name="severity" widget="badge"
+                       decoration-danger="severity == 'error'"
+                       decoration-warning="severity == 'warning'"
+                       decoration-info="severity == 'info'"/>
+                <field name="move_id" optional="show"/>
+                <field name="context_label" optional="show"/>
+                <field name="label"/>
+                <field name="message"/>
+                <field name="res_name" optional="hide"/>
+                <field name="path" optional="hide"/>
+                <field name="value" optional="hide"/>
+                <field name="res_model" column_invisible="1"/>
+                <button name="action_open_record" type="object" icon="fa-external-link"
+                        title="Open the record to fix" invisible="not res_model"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ngsign_validation_issue_form" model="ir.ui.view">
+        <field name="name">ngsign.validation.issue.form</field>
+        <field name="model">ngsign.validation.issue</field>
+        <field name="arch" type="xml">
+            <form string="Issue" create="0" edit="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="severity"/>
+                            <field name="move_id"/>
+                            <field name="context_label"/>
+                            <field name="label"/>
+                        </group>
+                        <group>
+                            <field name="res_name"/>
+                            <field name="value"/>
+                            <field name="path"/>
+                            <field name="res_model" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="message" nolabel="1"/>
+                        <field name="hint" nolabel="1" invisible="not hint"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_open_record" type="object" string="Open the record"
+                            class="btn-primary" invisible="not res_model"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ngsign_validation_result_form" model="ir.ui.view">
+        <field name="name">ngsign.validation.result.form</field>
+        <field name="model">ngsign.validation.result</field>
+        <field name="arch" type="xml">
+            <form string="e-Invoice Data Check">
+                <field name="has_errors" invisible="1"/>
+                <field name="is_clean" invisible="1"/>
+                <field name="resume_signature" invisible="1"/>
+                <field name="error_count" invisible="1"/>
+                <field name="warning_count" invisible="1"/>
+                <field name="info_count" invisible="1"/>
+                <field name="move_ids" invisible="1"/>
+
+                <div class="alert alert-success" role="alert" invisible="not is_clean">
+                    <strong>The data is compliant.</strong>
+                    No problem was found in the data that will be sent to NGSign.
+                </div>
+                <div class="alert alert-danger" role="alert" invisible="not has_errors">
+                    <strong>The invoice cannot be signed as is.</strong>
+                    <span invisible="not error_count">
+                        <field name="error_count" readonly="1" nolabel="1" class="oe_inline"/> critical problem(s)
+                    </span>
+                    <span invisible="not warning_count">
+                        , <field name="warning_count" readonly="1" nolabel="1" class="oe_inline"/> warning(s)
+                    </span>
+                    <span invisible="not info_count">
+                        , <field name="info_count" readonly="1" nolabel="1" class="oe_inline"/> information
+                    </span>
+                    . Fix the critical ones in Odoo, then click <em>Check Again</em>.
+                </div>
+                <div class="alert alert-warning" role="alert"
+                     invisible="has_errors or is_clean or not warning_count">
+                    <strong>Warnings only.</strong>
+                    The invoice can be sent, but the data below will be altered or is
+                    incomplete. Fix it, or continue anyway.
+                </div>
+                <div class="alert alert-info" role="alert"
+                     invisible="has_errors or is_clean or warning_count">
+                    <strong>For your information.</strong>
+                    Nothing blocks the signature: the points below are only there for
+                    you to check.
+                </div>
+
+                <field name="issue_ids" nolabel="1" readonly="1"
+                       context="{'list_view_ref': 'ngsign_einvoice_odoo.view_ngsign_validation_issue_list',
+                                 'form_view_ref': 'ngsign_einvoice_odoo.view_ngsign_validation_issue_form'}"/>
+
+                <footer>
+                    <button name="action_proceed" type="object" string="Sign Anyway"
+                            class="btn-primary" invisible="has_errors or not resume_signature"/>
+                    <button name="action_recheck" type="object" string="Check Again"
+                            class="btn-secondary" invisible="is_clean"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
