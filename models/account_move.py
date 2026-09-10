@@ -148,6 +148,27 @@ class AccountMove(models.Model):
             lambda l: l.display_type not in ('line_section', 'line_note')
         )
 
+    @staticmethod
+    def _ngsign_date_millis(day):
+        """Epoch milliseconds at local midnight for ``day``, the representation
+        NGSign uses for every date in the payload (``invoiceDate``, ``Dtm.date``)."""
+        return int(datetime.combine(day, datetime.min.time()).timestamp() * 1000)
+
+    def _ngsign_reference_date(self, day):
+        """``documentReferences[].date`` as the ``Dtm`` object the API deserialises.
+
+        The NGSign backend maps this field to ``com.ngtech.ttn.beans.Dtm``
+        (``{dateCode, date}``) and rejects a bare ISO string with a 400
+        ``JSON parse error``. ``I-31`` is the issue date of the referenced
+        document. Returns ``None`` when there is no date: the field is optional.
+        """
+        if not day:
+            return None
+        return {
+            'dateCode': 'I-31',
+            'date': self._ngsign_date_millis(day),
+        }
+
     def _ngsign_resolve_bank_account(self):
         """Bank account sent in the e-invoice.
 
@@ -480,7 +501,7 @@ class AccountMove(models.Model):
                 document_references.append({
                     'refID': 'I-88', # Référence TTN
                     'value': original_ttn_ref,
-                    'date': self.reversed_entry_id.invoice_date.isoformat() if self.reversed_entry_id.invoice_date else None
+                    'date': self._ngsign_reference_date(self.reversed_entry_id.invoice_date),
                 })
             
             # Use original invoice details for I-89
@@ -492,16 +513,13 @@ class AccountMove(models.Model):
             document_references.append({
                 'refID': 'I-89', # Référence interne
                 'value': ref_value,
-                'date': ref_date.isoformat() if ref_date else None
+                'date': self._ngsign_reference_date(ref_date),
             })
 
         # Construct TEIF Invoice object
-        # Convert date to Unix timestamp (seconds)
-        invoice_date_ts = 0
+        # Issuance timestamp in milliseconds, as the API expects
         if self.invoice_date:
-            # Convert date to datetime at midnight
-            dt = datetime.combine(self.invoice_date, datetime.min.time())
-            invoice_date_ts = int(dt.timestamp() * 1000)
+            invoice_date_ts = self._ngsign_date_millis(self.invoice_date)
         else:
             invoice_date_ts = int(datetime.now().timestamp() * 1000)
 

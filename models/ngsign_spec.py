@@ -54,8 +54,10 @@ v2.36 too:
     {taxRate}}``; JSON schema: ``{code, taxRate, amount, amountBase}``.
   * ``paymentDetails[].pyt`` — v2.36: ``paiConditionCode``; JSON schema:
     ``paymentTearmsTypeCode``.
-  * ``documentReferences[].date`` — v2.36: a date; JSON schema: a ``Dtm``
-    object ``{dateCode, date}``.
+  * ``documentReferences[].date`` — v2.36 says "a date", but the backend bean
+    is a ``Dtm`` object ``{dateCode, date}`` (a bare ISO string is refused
+    with a 400 ``JSON parse error``). The builder sends the ``Dtm`` form with
+    ``dateCode`` I-31 and the date in epoch milliseconds, like ``invoiceDate``.
   * ``paymentDetails[].pytFii`` — the JSON schema marks ``functionCode``
     (I-141..I-143) and ``institutionIdentification.nameCode`` as required; the
     builder does not send them.
