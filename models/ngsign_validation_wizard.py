@@ -120,14 +120,14 @@ class NGSignValidationResult(models.TransientModel):
         if self.has_errors:
             return self._action_open()
         try:
-            context = json.loads(self.resume_context or '{}')
+            resume_ctx = json.loads(self.resume_context or '{}')
         except ValueError:
-            context = {}
+            resume_ctx = {}
         # The PDF was rendered before the user corrected the data: render it again
         # so the signed document matches what is being declared.
         self.move_ids.action_ngsign_prepare()
         return self.move_ids.with_context(
-            ngsign_skip_validation=True, **context
+            ngsign_skip_validation=True, **resume_ctx
         ).action_ngsign_send()
 
     def action_close(self):

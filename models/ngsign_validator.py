@@ -828,19 +828,25 @@ class NGSignValidator(models.AbstractModel):
             ),
             Markup('<ul class="list-unstyled mb-0">'),
         ]
+        # Translate before the loop: ``_()`` locates the language by inspecting
+        # the caller's locals, and a local named ``context`` (or ``kwargs``)
+        # is taken for the Odoo context and queried with ``.get('lang')``.
+        # A Markup or string under that name crashes it, so never use those
+        # names in a function that calls ``_()``.
+        more_label = _("and %(count)s more...")
         for issue in ordered[:limit]:
             # Name of the problem in bold, then where it is, then what is wrong.
             name = Markup('<strong>%s</strong>') % issue['label']
-            context = Markup(' <em>%s</em>') % issue['context_label'] \
+            where = Markup(' <em>%s</em>') % issue['context_label'] \
                 if issue['context_label'] else ''
             hint = Markup(' <span class="text-muted">%s</span>') % issue['hint'] \
                 if issue['hint'] else ''
             parts.append(Markup('<li class="mb-1">%s %s%s — %s%s</li>') % (
-                self._severity_badge(issue['severity']), name, context,
+                self._severity_badge(issue['severity']), name, where,
                 issue['message'], hint))
         if len(ordered) > limit:
             parts.append(Markup('<li class="mb-0 text-muted">%s</li>') % (
-                _("and %(count)s more...") % {'count': len(ordered) - limit}))
+                more_label % {'count': len(ordered) - limit}))
         parts.append(Markup('</ul></div>'))
         return Markup('').join(parts)
 
