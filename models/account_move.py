@@ -1134,8 +1134,9 @@ class AccountMove(models.Model):
         self.ngsign_last_check = fields.Datetime.now()
         
         # We need at least one UUID. Preferably transaction UUID for public check.
+        # Returns False when no status could be obtained from NGSign, True otherwise.
         if not self.ngsign_transaction_uuid:
-            return
+            return False
 
         client = self._get_ngsign_client()
         try:
@@ -1181,7 +1182,7 @@ class AccountMove(models.Model):
 
             if not invoice_data:
                 _logger.warning(f"NGSign: Could not find invoice {self.name} (UUID: {self.ngsign_invoice_uuid}) in transaction {self.ngsign_transaction_uuid}")
-                return
+                return False
 
             status = invoice_data.get('status')
             invoice_uuid = invoice_data.get('uuid')
@@ -1249,9 +1250,60 @@ class AccountMove(models.Model):
             else:
                 # Still pending or processing
                 pass
+            return True
                 
         except Exception as e:
             raise UserError(_("Failed to check status: %s") % str(e))
+
+    # Statuses for which asking NGSign again cannot change anything.
+    _NGSIGN_FINAL_STATUSES = ('draft', 'CANCELLED', 'TTN Signed')
+
+    def action_check_ngsign_status_bulk(self):
+        """
+        "Check NGSign Status" from the list view Actions menu: refresh every
+        selected invoice that has a transaction still in progress. One failing
+        invoice does not stop the others; a summary is shown at the end.
+        """
+        to_check = self.filtered(lambda m: m.ngsign_transaction_uuid
+                                 and m.ngsign_status not in self._NGSIGN_FINAL_STATUSES)
+        skipped = len(self) - len(to_check)
+        updated, unreachable, failed = [], [], []
+        for move in to_check:
+            before = move.ngsign_status
+            try:
+                with self.env.cr.savepoint():
+                    found = move.action_check_ngsign_status()
+            except Exception as e:
+                _logger.warning(f"NGSign: Bulk status check failed for {move.name}: {e}")
+                failed.append(f"{move.name}: {e}")
+                continue
+            if found is False:
+                unreachable.append(move.name)
+            elif move.ngsign_status != before:
+                updated.append(move.name)
+
+        lines = [_("%(checked)s invoice(s) checked, %(updated)s updated.",
+                   checked=len(to_check), updated=len(updated))]
+        if updated:
+            lines.append(_("Updated: %s") % ', '.join(updated))
+        if skipped:
+            lines.append(_("%s skipped (no transaction or already final).") % skipped)
+        if unreachable:
+            lines.append(_("No status obtained from NGSign: %s") % ', '.join(unreachable))
+        if failed:
+            lines.append(_("Failed:") + "\n" + "\n".join(failed))
+        problems = bool(unreachable or failed)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('NGSign Status'),
+                'message': "\n".join(lines),
+                'type': 'danger' if failed else ('warning' if unreachable else ('success' if updated else 'info')),
+                'sticky': problems,
+                'next': {'type': 'ir.actions.client', 'tag': 'reload'},
+            },
+        }
 
     def action_generate_debug_json(self):
         """

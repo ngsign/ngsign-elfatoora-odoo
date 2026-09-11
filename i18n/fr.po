@@ -234,6 +234,7 @@ msgid "Sign with NGSign"
 msgstr "Signer avec NGSign"
 
 #. module: ngsign_einvoice_odoo
+#: model:ir.actions.server,name:ngsign_einvoice_odoo.action_check_ngsign_status_bulk
 #: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_move_form_inherit_ngsign
 msgid "Check NGSign Status"
 msgstr "Vérifier statut NGSign"
@@ -1816,3 +1817,33 @@ msgstr "Transaction NGSign %(uuid)s (signataire : %(signer)s) annulée par %(use
 #: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
 msgid "unknown"
 msgstr "inconnu"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "%(checked)s invoice(s) checked, %(updated)s updated."
+msgstr "%(checked)s facture(s) vérifiée(s), %(updated)s mise(s) à jour."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Updated: %s"
+msgstr "Mises à jour : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "%s skipped (no transaction or already final)."
+msgstr "%s ignorée(s) (pas de transaction ou statut déjà définitif)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Failed:"
+msgstr "Échecs :"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "No status obtained from NGSign: %s"
+msgstr "Aucun statut obtenu de NGSign : %s"
