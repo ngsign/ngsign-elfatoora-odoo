@@ -291,13 +291,6 @@ msgid "Sending eInvoice(s) for signature"
 msgstr "Envoi des e-facture(s) pour signature"
 
 #. module: ngsign_einvoice_odoo
-#. odoo-javascript
-#: code:addons/ngsign_einvoice_odoo/static/src/js/ngsign_action.js:0
-#, python-format
-msgid "Process completed successfully."
-msgstr "Processus terminé avec succès."
-
-#. module: ngsign_einvoice_odoo
 #. odoo-python
 #: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
 #, python-format
@@ -1847,3 +1840,63 @@ msgstr "Échecs :"
 #: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
 msgid "No status obtained from NGSign: %s"
 msgstr "Aucun statut obtenu de NGSign : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "the configured email template no longer exists"
+msgstr "le modèle d'email configuré n'existe plus"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "no email template is configured in Settings"
+msgstr "aucun modèle d'email n'est configuré dans les Paramètres"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "the email could not be sent: %s"
+msgstr "l'email n'a pas pu être envoyé : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Signature request not sent"
+msgstr "Demande de signature non envoyée"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Transaction created for %(signer)s (%(invoices)s), but %(problem)s. Use the Signing Page button to send the link again."
+msgstr "Transaction créée pour %(signer)s (%(invoices)s), mais %(problem)s. Utilisez le bouton Page de signature pour renvoyer le lien."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Signature request sent"
+msgstr "Demande de signature envoyée"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "The signing link for %(invoices)s was sent by email to %(signer)s (%(email)s)."
+msgstr "Le lien de signature pour %(invoices)s a été envoyé par email à %(signer)s (%(email)s)."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-javascript
+#: code:addons/ngsign_einvoice_odoo/static/src/js/ngsign_action.js:0
+msgid "Transaction created for %s. The signing page opens in a new tab."
+msgstr "Transaction créée pour %s. La page de signature s'ouvre dans un nouvel onglet."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-javascript
+#: code:addons/ngsign_einvoice_odoo/static/src/js/ngsign_action.js:0
+msgid "Transaction created. The signing page opens in a new tab."
+msgstr "Transaction créée. La page de signature s'ouvre dans un nouvel onglet."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-javascript
+#: code:addons/ngsign_einvoice_odoo/static/src/js/ngsign_action.js:0
+msgid "eInvoice(s) sent to NGSign for signature."
+msgstr "Facture(s) électronique(s) envoyée(s) à NGSign pour signature."

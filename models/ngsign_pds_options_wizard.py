@@ -77,6 +77,7 @@ class NgsignPdsOptionsWizard(models.TransientModel):
                 'type': 'ir.actions.act_url',
                 'url': self.move_id.ngsign_pds_url,
                 'target': 'new',
+                'close': True,  # close this dialog once the page is opened
             }
         elif self.action_type == 'send_email':
             self._check_signer(self.authorized_user_id)

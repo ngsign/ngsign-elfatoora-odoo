@@ -2,7 +2,7 @@
 
 import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
-import { BlockUI } from "@web/core/ui/block_ui";
+import { sprintf } from "@web/core/utils/strings";
 
 const VALIDATION_MODEL = "ngsign.validation.result";
 
@@ -33,6 +33,11 @@ async function actionSignNGSignJs(env, action) {
             blocked--;
         }
     };
+
+    // This action is launched from the "Sign with NGSign" wizard dialog: close it
+    // right away so the user cannot confirm twice while the process runs. From
+    // the list view (no dialog) this is a no-op.
+    await actionService.doAction({ type: "ir.actions.act_window_close" });
 
     block(_t("Checking your eInvoice(s)"));
 
@@ -68,9 +73,20 @@ async function actionSignNGSignJs(env, action) {
         // Second line of defence: the backend gate can still return the check
         // wizard (direct call, stale client, data changed since step 0).
         const isValidation = result && result.res_model === VALIDATION_MODEL;
+        // The backend may already describe the outcome (e.g. email sent / not sent).
+        const backendMessage = result && result.tag === "display_notification";
 
-        if (!isValidation) {
-            notification.add(_t("Process completed successfully."), { type: "success" });
+        if (!isValidation && !backendMessage) {
+            const signer = context.ngsign_send_to_user_name;
+            let message;
+            if (result && result.type === "ir.actions.act_url") {
+                message = signer
+                    ? sprintf(_t("Transaction created for %s. The signing page opens in a new tab."), signer)
+                    : _t("Transaction created. The signing page opens in a new tab.");
+            } else {
+                message = _t("eInvoice(s) sent to NGSign for signature.");
+            }
+            notification.add(message, { title: _t("NGSign"), type: "success" });
         }
 
         // If result contains an action (e.g. act_url for DigiGO, or the data check), execute it
@@ -86,8 +102,9 @@ async function actionSignNGSignJs(env, action) {
             return;
         }
 
-        // Always reload the view to show updated status
-        return { type: "ir.actions.client", tag: "reload" };
+        // Refresh the current view to show the new status. A soft reload keeps the
+        // confirmation notification on screen, unlike a full "reload".
+        return { type: "ir.actions.client", tag: "soft_reload" };
 
     } catch (error) {
         console.error("NGSign Error:", error);

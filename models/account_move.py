@@ -987,32 +987,54 @@ class AccountMove(models.Model):
                 action_type = self.env.context.get('ngsign_action_type')
                 
                 if action_type == 'send':
-                    # Send email with PDS URL to the signer
+                    # Send email with PDS URL to the signer. The transaction exists
+                    # whatever happens to the email: tell the user precisely.
+                    user = signer
+                    invoices = ', '.join(self.mapped('name'))
+                    problem = None
                     try:
-                        user = signer
                         template_id_str = params.get_param('ngsign.email_template_id')
-                        if template_id_str:
-                            template = self.env['mail.template'].browse(int(template_id_str))
-                            if template.exists():
-                                for move in self:
-                                    template.sudo().with_context(
-                                        ngsign_pds_url=move.ngsign_pds_url,
-                                        ngsign_send_to_user_name=user.name
-                                    ).send_mail(move.id, force_send=True, email_values={'email_to': user.email})
-                                _logger.info(f"NGSign: Sent signature request email to {user.email}")
-                            else:
-                                _logger.warning("NGSign: Configured email template does not exist.")
+                        template = self.env['mail.template'].browse(int(template_id_str)) if template_id_str else self.env['mail.template']
+                        if template.exists():
+                            for move in self:
+                                template.sudo().with_context(
+                                    ngsign_pds_url=move.ngsign_pds_url,
+                                    ngsign_send_to_user_name=user.name
+                                ).send_mail(move.id, force_send=True, email_values={'email_to': user.email})
+                            _logger.info(f"NGSign: Sent signature request email to {user.email}")
+                        elif template_id_str:
+                            problem = _("the configured email template no longer exists")
                         else:
-                            _logger.warning("NGSign: No email template configured for signature requests.")
+                            problem = _("no email template is configured in Settings")
                     except Exception as e:
                         _logger.error(f"NGSign: Failed to send signature email: {e}")
-                    
-                    return True # Do not open URL locally
+                        problem = _("the email could not be sent: %s") % e
+
+                    if problem:
+                        title = _("Signature request not sent")
+                        message = _("Transaction created for %(signer)s (%(invoices)s), but %(problem)s. "
+                                    "Use the Signing Page button to send the link again.",
+                                    signer=user.name, invoices=invoices, problem=problem)
+                    else:
+                        title = _("Signature request sent")
+                        message = _("The signing link for %(invoices)s was sent by email to %(signer)s (%(email)s).",
+                                    invoices=invoices, signer=user.name, email=user.email)
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'title': title,
+                            'message': message,
+                            'type': 'warning' if problem else 'success',
+                            'sticky': bool(problem),
+                        },
+                    }
                 else:
                     return {
                         'type': 'ir.actions.act_url',
                         'url': pds_url,
                         'target': 'new',
+                        'close': True,
                     }
                 
         except Exception as e:
