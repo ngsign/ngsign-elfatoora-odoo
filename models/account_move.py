@@ -774,11 +774,25 @@ class AccountMove(models.Model):
         return self.env['res.users'].browse(ids).exists()
 
     @api.model
+    def _ngsign_last_signer_param(self):
+        # One parameter per connected user: no column on res.users, so a
+        # forgotten module update cannot break the whole instance.
+        return 'ngsign.last_signer.%d' % self.env.uid
+
+    @api.model
+    def _ngsign_last_signer(self):
+        """Signer chosen last time by the connected user (may be empty)."""
+        value = self.env['ir.config_parameter'].sudo().get_param(self._ngsign_last_signer_param(), '')
+        if not value.isdigit():
+            return self.env['res.users']
+        return self.env['res.users'].browse(int(value)).exists()
+
+    @api.model
     def _ngsign_default_signer(self):
         """Signer proposed by default: the one selected last time by the
         connected user, else the connected user, else the first authorized one."""
         authorized = self._ngsign_authorized_users()
-        for candidate in (self.env.user.ngsign_last_signer_id, self.env.user):
+        for candidate in (self._ngsign_last_signer(), self.env.user):
             if candidate and candidate.active and (not authorized or candidate in authorized):
                 return candidate
         return authorized[:1]
@@ -786,8 +800,8 @@ class AccountMove(models.Model):
     @api.model
     def _ngsign_remember_signer(self, signer):
         """Store the signer chosen by the connected user for the next time."""
-        if signer and self.env.user.ngsign_last_signer_id != signer:
-            self.env.user.sudo().write({'ngsign_last_signer_id': signer.id})
+        if signer and self._ngsign_last_signer() != signer:
+            self.env['ir.config_parameter'].sudo().set_param(self._ngsign_last_signer_param(), str(signer.id))
 
     @api.model
     def _ngsign_get_signer(self):

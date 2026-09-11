@@ -1658,16 +1658,6 @@ msgid "Signer who receives the signing page link. The last signer you selected i
 msgstr "Signataire qui reçoit le lien vers la page de signature. Le dernier signataire que vous avez sélectionné est proposé par défaut."
 
 #. module: ngsign_einvoice_odoo
-#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_res_users__ngsign_last_signer_id
-msgid "Last NGSign Signer"
-msgstr "Dernier signataire NGSign"
-
-#. module: ngsign_einvoice_odoo
-#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_res_users__ngsign_last_signer_id
-msgid "Signer selected the last time this user launched a DigiGO / SSCD signature. Proposed by default in the signature wizards."
-msgstr "Signataire sélectionné la dernière fois que cet utilisateur a lancé une signature DigiGO / SSCD. Proposé par défaut dans les assistants de signature."
-
-#. module: ngsign_einvoice_odoo
 #: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_sign_options_wizard__action_type__sign_now
 msgid "Sign Now"
 msgstr "Signer maintenant"
