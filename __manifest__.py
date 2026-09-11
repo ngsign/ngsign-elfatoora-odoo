@@ -1,6 +1,6 @@
 {
     'name': 'NGSign e-invoice',
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     'category': 'Accounting',
     'summary': 'Integration with NGSign for e-invoicing and SEAL signing',
     'description': """

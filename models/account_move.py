@@ -763,6 +763,47 @@ class AccountMove(models.Model):
                 raise UserError(_("Failed to prepare PDF for invoice %s: %s") % (move.name, str(e)))
         return True
 
+    # ------------------------------------------------------------------
+    # DigiGO / SSCD signer selection
+    # ------------------------------------------------------------------
+    @api.model
+    def _ngsign_authorized_users(self):
+        """Users listed as authorized signers in Settings (empty = no restriction)."""
+        auth_users = self.env['ir.config_parameter'].sudo().get_param('ngsign.authorized_users', '')
+        ids = [int(u) for u in auth_users.split(',') if u.strip().isdigit()]
+        return self.env['res.users'].browse(ids).exists()
+
+    @api.model
+    def _ngsign_default_signer(self):
+        """Signer proposed by default: the one selected last time by the
+        connected user, else the connected user, else the first authorized one."""
+        authorized = self._ngsign_authorized_users()
+        for candidate in (self.env.user.ngsign_last_signer_id, self.env.user):
+            if candidate and candidate.active and (not authorized or candidate in authorized):
+                return candidate
+        return authorized[:1]
+
+    @api.model
+    def _ngsign_remember_signer(self, signer):
+        """Store the signer chosen by the connected user for the next time."""
+        if signer and self.env.user.ngsign_last_signer_id != signer:
+            self.env.user.sudo().write({'ngsign_last_signer_id': signer.id})
+
+    @api.model
+    def _ngsign_get_signer(self):
+        """Signer of the transaction: the one passed by the wizard in the
+        context, else the default. Always checked against the authorized list."""
+        signer_id = self.env.context.get('ngsign_signer_id')
+        signer = self.env['res.users'].browse(signer_id).exists() if signer_id else self._ngsign_default_signer()
+        if not signer:
+            raise UserError(_("No signer selected. Please choose a signer."))
+        authorized = self._ngsign_authorized_users()
+        if authorized and signer not in authorized:
+            raise UserError(_("%s is not an authorized signer. Please configure authorized signers in Settings.") % signer.name)
+        if not signer.email:
+            raise UserError(_("The signer %s has no email address.") % signer.name)
+        return signer
+
     def action_ngsign_send(self):
         """
         Step 2 of signing process: Send invoices to NGSign.
@@ -811,6 +852,7 @@ class AccountMove(models.Model):
             invoices_payload = []
             cc_email = None
             notify_owner = False
+            signer = None
             
             # Prepare payload for each invoice
             for move in self:
@@ -846,18 +888,15 @@ class AccountMove(models.Model):
                 
             else:
                 # DigiGO or SSCD Certificate - Manual signing via PDS
-                action_type = self.env.context.get('ngsign_action_type', 'sign_now')
-                if action_type == 'send':
-                    send_to_user_id = self.env.context.get('ngsign_send_to_user_id')
-                    user = self.env['res.users'].browse(send_to_user_id)
-                    signer_email = user.email
-                else:
-                    signer_email = self.env.user.email
+                # The signer is chosen in the wizard (defaults to the last one used);
+                # the connected user is not necessarily the person who signs.
+                signer = self._ngsign_get_signer()
+                self._ngsign_remember_signer(signer)
 
                 # Always use advanced endpoint (v2)
                 response = client.create_transaction_advanced(
                     invoices_payload,
-                    signer_email=signer_email,
+                    signer_email=signer.email,
                     cc_email=cc_email
                 )
                 
@@ -929,10 +968,9 @@ class AccountMove(models.Model):
                 action_type = self.env.context.get('ngsign_action_type')
                 
                 if action_type == 'send':
-                    # Send email with PDS URL
-                    send_to_user_id = self.env.context.get('ngsign_send_to_user_id')
+                    # Send email with PDS URL to the signer
                     try:
-                        user = self.env['res.users'].browse(send_to_user_id)
+                        user = signer
                         template_id_str = params.get_param('ngsign.email_template_id')
                         if template_id_str:
                             template = self.env['mail.template'].browse(int(template_id_str))
@@ -1207,16 +1245,7 @@ class AccountMove(models.Model):
                 full_payload['ccEmail'] = cc_email
 
             if cert_type in ('digigo', 'sscd'):
-                action_type = self.env.context.get('ngsign_action_type', 'sign_now')
-                if action_type == 'send':
-                    send_to_user_id = self.env.context.get('ngsign_send_to_user_id')
-                    if send_to_user_id:
-                        signer_email = self.env['res.users'].browse(send_to_user_id).email
-                    else:
-                        signer_email = self.env.user.email
-                else:
-                    signer_email = self.env.user.email
-                full_payload['signerEmail'] = signer_email
+                full_payload['signerEmail'] = self._ngsign_get_signer().email
             
             json_data = json.dumps(full_payload, indent=4, default=str, ensure_ascii=False)
             

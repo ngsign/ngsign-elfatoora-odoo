@@ -10,44 +10,45 @@ class NgsignSignOptionsWizard(models.TransientModel):
         ('sign_now', 'Sign Now'),
         ('send', 'Send for Signature')
     ], string='Action', default='sign_now', required=True)
-    
-    authorized_user_id = fields.Many2one(
-        'res.users', 
-        string='Select User', 
-        domain="[('id', 'in', authorized_user_ids)]"
+
+    # The person who signs the transaction on NGSign. Not necessarily the
+    # connected user: an assistant may launch the signature for a manager.
+    signer_id = fields.Many2one(
+        'res.users',
+        string='Signer',
+        required=True,
+        default=lambda self: self.env['account.move']._ngsign_default_signer(),
+        domain="[('id', 'in', authorized_user_ids)]",
+        help="Signer of the invoice(s) on NGSign. The last signer you selected is proposed by default.",
     )
     authorized_user_ids = fields.Many2many('res.users', compute='_compute_authorized_user_ids')
-    
-    can_sign_now = fields.Boolean(compute='_compute_can_sign_now')
 
     @api.depends('action_type')
     def _compute_authorized_user_ids(self):
-        auth_users = self.env['ir.config_parameter'].sudo().get_param('ngsign.authorized_users', '')
-        auth_users_ids = [int(u) for u in auth_users.split(',')] if auth_users else []
+        authorized = self.env['account.move']._ngsign_authorized_users()
+        if not authorized:
+            # No restriction configured: any internal user may sign.
+            authorized = self.env['res.users'].search([('share', '=', False)])
         for wiz in self:
-            wiz.authorized_user_ids = [(6, 0, auth_users_ids)]
-
-    @api.depends('action_type', 'authorized_user_ids')
-    def _compute_can_sign_now(self):
-        for wiz in self:
-            if not wiz.authorized_user_ids:
-                wiz.can_sign_now = True
-            else:
-                wiz.can_sign_now = self.env.user.id in wiz.authorized_user_ids.ids
+            wiz.authorized_user_ids = [(6, 0, authorized.ids)]
 
     def action_confirm(self):
         self.ensure_one()
+        if not self.signer_id:
+            raise UserError(_("Please select a signer."))
+        if self.signer_id not in self.authorized_user_ids:
+            raise UserError(_("%s is not an authorized signer. Please configure authorized signers in Settings.") % self.signer_id.name)
+        if not self.signer_id.email:
+            raise UserError(_("The signer %s has no email address.") % self.signer_id.name)
+
+        # Proposed by default next time, for this user
+        self.env['account.move']._ngsign_remember_signer(self.signer_id)
+
         context_data = {
-            'ngsign_action_type': self.action_type
+            'ngsign_action_type': self.action_type,
+            'ngsign_signer_id': self.signer_id.id,
+            'ngsign_send_to_user_name': self.signer_id.name,
         }
-        if self.action_type == 'sign_now':
-            if not self.can_sign_now:
-                raise UserError(_("You don't have permission to sign invoices. Please configure authorized users in settings."))
-        elif self.action_type == 'send':
-            if not self.authorized_user_id:
-                raise UserError(_("Please select a user to send the signature link to."))
-            context_data['ngsign_send_to_user_id'] = self.authorized_user_id.id
-            context_data['ngsign_send_to_user_name'] = self.authorized_user_id.name
 
         active_ids = self.env.context.get('active_ids') or [self.move_id.id]
         

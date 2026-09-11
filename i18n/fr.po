@@ -417,6 +417,7 @@ msgstr "Facture signée mais échec du téléchargement des fichiers : %s"
 
 #. module: ngsign_einvoice_odoo
 #: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_move_form_inherit_ngsign
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_pds_options_wizard__action_type__open_pds
 msgid "Open Signing Page"
 msgstr "Ouvrir la page de signature"
 
@@ -1635,3 +1636,86 @@ msgstr "Le champ « %(field)s » est inexistant."
 #: code:addons/ngsign_einvoice_odoo/models/ngsign_validator.py:0
 msgid "\"%(value)s\" is %(len)s characters long: a Tunisian Matricule Fiscal has %(min)s characters (7 digits and a key letter), up to %(max)s with the VAT code, the category and the establishment number."
 msgstr "« %(value)s » comporte %(len)s caractères : un matricule fiscal Tunisien en compte %(min)s (7 chiffres et une lettre clé), jusqu'à %(max)s avec le code TVA, la catégorie et le numéro d'établissement."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__signer_id
+msgid "Signer"
+msgstr "Signataire"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_ngsign_sign_options_wizard__signer_id
+msgid "Signer of the invoice(s) on NGSign. The last signer you selected is proposed by default."
+msgstr "Signataire de la ou des factures sur NGSign. Le dernier signataire que vous avez sélectionné est proposé par défaut."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__authorized_user_id
+msgid "Send To"
+msgstr "Envoyer à"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__authorized_user_id
+msgid "Signer who receives the signing page link. The last signer you selected is proposed by default."
+msgstr "Signataire qui reçoit le lien vers la page de signature. Le dernier signataire que vous avez sélectionné est proposé par défaut."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_res_users__ngsign_last_signer_id
+msgid "Last NGSign Signer"
+msgstr "Dernier signataire NGSign"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_res_users__ngsign_last_signer_id
+msgid "Signer selected the last time this user launched a DigiGO / SSCD signature. Proposed by default in the signature wizards."
+msgstr "Signataire sélectionné la dernière fois que cet utilisateur a lancé une signature DigiGO / SSCD. Proposé par défaut dans les assistants de signature."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_sign_options_wizard__action_type__sign_now
+msgid "Sign Now"
+msgstr "Signer maintenant"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_sign_options_wizard__action_type__send
+msgid "Send for Signature"
+msgstr "Envoyer pour signature"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_pds_options_wizard__action_type__send_email
+msgid "Send via Email"
+msgstr "Envoyer par email"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_sign_options_wizard_form
+msgid "The signing page opens in a new tab. The signer must complete the signature with their DigiGO / SSCD certificate."
+msgstr "La page de signature s'ouvre dans un nouvel onglet. Le signataire doit finaliser la signature avec son certificat DigiGO / SSCD."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_sign_options_wizard_form
+msgid "The signing page link is sent by email to the signer."
+msgstr "Le lien vers la page de signature est envoyé par email au signataire."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_sign_options_wizard.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_pds_options_wizard.py:0
+msgid "%s is not an authorized signer. Please configure authorized signers in Settings."
+msgstr "%s n'est pas un signataire autorisé. Veuillez configurer les signataires autorisés dans les Paramètres."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_sign_options_wizard.py:0
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_pds_options_wizard.py:0
+msgid "The signer %s has no email address."
+msgstr "Le signataire %s n'a pas d'adresse email."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "No signer selected. Please choose a signer."
+msgstr "Aucun signataire sélectionné. Veuillez choisir un signataire."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/ngsign_sign_options_wizard.py:0
+msgid "Please select a signer."
+msgstr "Veuillez sélectionner un signataire."

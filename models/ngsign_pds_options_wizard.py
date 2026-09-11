@@ -16,34 +16,25 @@ class NgsignPdsOptionsWizard(models.TransientModel):
     
     authorized_user_id = fields.Many2one(
         'res.users', 
-        string='Select User', 
-        domain="[('id', 'in', authorized_user_ids)]"
+        string='Send To', 
+        default=lambda self: self.env['account.move']._ngsign_default_signer(),
+        domain="[('id', 'in', authorized_user_ids)]",
+        help="Signer who receives the signing page link. The last signer you selected is proposed by default.",
     )
     authorized_user_ids = fields.Many2many('res.users', compute='_compute_authorized_user_ids')
-    
-    can_sign_now = fields.Boolean(compute='_compute_can_sign_now')
 
     @api.depends('action_type')
     def _compute_authorized_user_ids(self):
-        auth_users = self.env['ir.config_parameter'].sudo().get_param('ngsign.authorized_users', '')
-        auth_users_ids = [int(u) for u in auth_users.split(',')] if auth_users else []
+        authorized = self.env['account.move']._ngsign_authorized_users()
+        if not authorized:
+            # No restriction configured: any internal user may sign.
+            authorized = self.env['res.users'].search([('share', '=', False)])
         for wiz in self:
-            wiz.authorized_user_ids = [(6, 0, auth_users_ids)]
-
-    @api.depends('action_type', 'authorized_user_ids')
-    def _compute_can_sign_now(self):
-        for wiz in self:
-            if not wiz.authorized_user_ids:
-                wiz.can_sign_now = True
-            else:
-                wiz.can_sign_now = self.env.user.id in wiz.authorized_user_ids.ids
+            wiz.authorized_user_ids = [(6, 0, authorized.ids)]
 
     def action_confirm(self):
         self.ensure_one()
         if self.action_type == 'open_pds':
-            if not self.can_sign_now:
-                raise UserError(_("You don't have permission to sign invoices. Please configure authorized users in settings."))
-            
             if not self.move_id.ngsign_pds_url:
                 raise UserError(_("No Signing Page URL found for this invoice."))
                 
@@ -55,6 +46,11 @@ class NgsignPdsOptionsWizard(models.TransientModel):
         elif self.action_type == 'send_email':
             if not self.authorized_user_id:
                 raise UserError(_("Please select a user to send the signature link to."))
+            if self.authorized_user_id not in self.authorized_user_ids:
+                raise UserError(_("%s is not an authorized signer. Please configure authorized signers in Settings.") % self.authorized_user_id.name)
+            if not self.authorized_user_id.email:
+                raise UserError(_("The signer %s has no email address.") % self.authorized_user_id.name)
+            self.env['account.move']._ngsign_remember_signer(self.authorized_user_id)
             
             if not self.move_id.ngsign_pds_url:
                 raise UserError(_("No Signing Page URL found for this invoice."))

@@ -5,12 +5,8 @@
         <field name="model">ngsign.pds.options.wizard</field>
         <field name="arch" type="xml">
             <form string="NGSign Signing Page Options">
-                <div class="alert alert-warning" role="alert" invisible="can_sign_now">
-                    You do not have permission to access the signing page yourself. You can only send it via email.
-                </div>
                 <group>
                     <field name="move_id" invisible="1"/>
-                    <field name="can_sign_now" invisible="1"/>
                     <field name="authorized_user_ids" invisible="1"/>
                     
                     <field name="action_type" widget="radio"/>
@@ -20,8 +16,7 @@
                            options="{'no_create': True, 'no_open': True}"/>
                 </group>
                 <footer>
-                    <button string="Confirm" type="object" name="action_confirm" class="btn-primary" 
-                            invisible="action_type == 'open_pds' and not can_sign_now"/>
+                    <button string="Confirm" type="object" name="action_confirm" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

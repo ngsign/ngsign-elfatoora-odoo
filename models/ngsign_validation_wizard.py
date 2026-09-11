@@ -50,7 +50,7 @@ class NGSignValidationResult(models.TransientModel):
         """Create the wizard for ``moves`` and return the action opening it."""
         if issues is None:
             issues = self.env['ngsign.validator'].validate_moves(moves)
-        resume_keys = ('ngsign_action_type', 'ngsign_send_to_user_id')
+        resume_keys = ('ngsign_action_type', 'ngsign_signer_id', 'ngsign_send_to_user_name')
         wizard = self.create({
             'move_ids': [(6, 0, moves.ids)],
             'resume_signature': resume_signature,
