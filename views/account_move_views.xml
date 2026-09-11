@@ -55,6 +55,7 @@
                         </group>
                         <group>
                             <field name="ngsign_status" readonly="1"/>
+                            <field name="ngsign_signer_id" readonly="1" invisible="not ngsign_signer_id"/>
                             <field name="ngsign_notify_owner" readonly="ngsign_status != 'draft'"/>
                         </group>
                     </group>

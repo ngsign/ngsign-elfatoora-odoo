@@ -8,13 +8,33 @@
                 <group>
                     <field name="move_id" invisible="1"/>
                     <field name="authorized_user_ids" invisible="1"/>
-                    
+                    <field name="transaction_move_count" invisible="1"/>
+
+                    <field name="current_signer_id" readonly="1" options="{'no_open': True}"
+                           invisible="not current_signer_id"/>
+                    <label for="current_signer_id" invisible="current_signer_id"/>
+                    <div class="text-muted" invisible="current_signer_id">
+                        Unknown: the transaction was created before the signer could be chosen. It was created for the user who launched it.
+                    </div>
+
                     <field name="action_type" widget="radio"/>
                     <field name="authorized_user_id" 
                            invisible="action_type != 'send_email'" 
                            required="action_type == 'send_email'"
                            options="{'no_create': True, 'no_open': True}"/>
+                    <field name="signer_id"
+                           invisible="action_type != 'restart'"
+                           required="action_type == 'restart'"
+                           options="{'no_create': True, 'no_open': True}"/>
+                    <field name="restart_delivery" widget="radio"
+                           invisible="action_type != 'restart'"/>
                 </group>
+                <div class="alert alert-warning" role="alert" invisible="action_type != 'restart'">
+                    The pending transaction is cancelled on NGSign and a new one is created for the new signer. The current signing page link stops working.
+                    <span invisible="transaction_move_count &lt;= 1">
+                        This transaction covers <field name="transaction_move_count" class="oe_inline" readonly="1"/> invoices: all of them are cancelled and sent again together.
+                    </span>
+                </div>
                 <footer>
                     <button string="Confirm" type="object" name="action_confirm" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>

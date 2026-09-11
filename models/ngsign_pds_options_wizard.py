@@ -11,9 +11,15 @@ class NgsignPdsOptionsWizard(models.TransientModel):
     move_id = fields.Many2one('account.move', string='Invoice', required=True, default=lambda self: self.env.context.get('active_id'))
     action_type = fields.Selection([
         ('open_pds', 'Open Signing Page'),
-        ('send_email', 'Send via Email')
+        ('send_email', 'Send via Email'),
+        ('restart', 'Restart with another signer'),
     ], string='Action', default='open_pds', required=True)
-    
+
+    # Signer the existing transaction was created for. Empty on transactions
+    # created before the signer selection existed.
+    current_signer_id = fields.Many2one(related='move_id.ngsign_signer_id', string='Transaction Signer')
+    transaction_move_count = fields.Integer(compute='_compute_transaction_move_count')
+
     authorized_user_id = fields.Many2one(
         'res.users', 
         string='Send To', 
@@ -21,6 +27,18 @@ class NgsignPdsOptionsWizard(models.TransientModel):
         domain="[('id', 'in', authorized_user_ids)]",
         help="Signer who receives the signing page link. The last signer you selected is proposed by default.",
     )
+    # New signer when the transaction is cancelled and created again.
+    signer_id = fields.Many2one(
+        'res.users',
+        string='New Signer',
+        default=lambda self: self.env['account.move']._ngsign_default_signer(),
+        domain="[('id', 'in', authorized_user_ids)]",
+        help="The pending transaction is cancelled on NGSign and created again for this signer.",
+    )
+    restart_delivery = fields.Selection([
+        ('open', 'Open the signing page'),
+        ('email', 'Send the link by email to the signer'),
+    ], string='Then', default='open', required=True)
     authorized_user_ids = fields.Many2many('res.users', compute='_compute_authorized_user_ids')
 
     @api.depends('action_type')
@@ -32,28 +50,36 @@ class NgsignPdsOptionsWizard(models.TransientModel):
         for wiz in self:
             wiz.authorized_user_ids = [(6, 0, authorized.ids)]
 
+    @api.depends('move_id')
+    def _compute_transaction_move_count(self):
+        for wiz in self:
+            wiz.transaction_move_count = len(wiz.move_id._ngsign_transaction_moves()) if wiz.move_id else 0
+
+    def _check_signer(self, signer):
+        if not signer:
+            raise UserError(_("Please select a signer."))
+        if signer not in self.authorized_user_ids:
+            raise UserError(_("%s is not an authorized signer. Please configure authorized signers in Settings.") % signer.name)
+        if not signer.email:
+            raise UserError(_("The signer %s has no email address.") % signer.name)
+        self.env['account.move']._ngsign_remember_signer(signer)
+
     def action_confirm(self):
         self.ensure_one()
+        if self.action_type == 'restart':
+            return self._action_restart()
+
+        if not self.move_id.ngsign_pds_url:
+            raise UserError(_("No Signing Page URL found for this invoice."))
+
         if self.action_type == 'open_pds':
-            if not self.move_id.ngsign_pds_url:
-                raise UserError(_("No Signing Page URL found for this invoice."))
-                
             return {
                 'type': 'ir.actions.act_url',
                 'url': self.move_id.ngsign_pds_url,
                 'target': 'new',
             }
         elif self.action_type == 'send_email':
-            if not self.authorized_user_id:
-                raise UserError(_("Please select a user to send the signature link to."))
-            if self.authorized_user_id not in self.authorized_user_ids:
-                raise UserError(_("%s is not an authorized signer. Please configure authorized signers in Settings.") % self.authorized_user_id.name)
-            if not self.authorized_user_id.email:
-                raise UserError(_("The signer %s has no email address.") % self.authorized_user_id.name)
-            self.env['account.move']._ngsign_remember_signer(self.authorized_user_id)
-            
-            if not self.move_id.ngsign_pds_url:
-                raise UserError(_("No Signing Page URL found for this invoice."))
+            self._check_signer(self.authorized_user_id)
             
             params = self.env['ir.config_parameter'].sudo()
             template_id_str = params.get_param('ngsign.email_template_id')
@@ -86,3 +112,19 @@ class NgsignPdsOptionsWizard(models.TransientModel):
                     raise UserError(_("Configured email template does not exist. Please check Settings."))
             else:
                 raise UserError(_("No email template configured. Please set one in Settings."))
+
+    def _action_restart(self):
+        """Cancel the pending transaction and launch the signature again for
+        the new signer, on every invoice the transaction contained."""
+        self._check_signer(self.signer_id)
+        moves = self.move_id.action_ngsign_cancel_transaction()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'ngsign_einvoice_odoo.action_sign_ngsign_js',
+            'context': {
+                'ngsign_action_type': 'send' if self.restart_delivery == 'email' else 'sign_now',
+                'ngsign_signer_id': self.signer_id.id,
+                'ngsign_send_to_user_name': self.signer_id.name,
+                'active_ids': moves.ids,
+            },
+        }

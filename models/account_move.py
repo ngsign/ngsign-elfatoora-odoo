@@ -18,6 +18,9 @@ class AccountMove(models.Model):
     ngsign_ttn_reference = fields.Char(string='TTN eInvoice ID', copy=False, help="Unique reference returned by TTN after signing")
     ngsign_ttn_qr_code = fields.Binary(string='TTN QR Code', copy=False, attachment=True)
     ngsign_pds_url = fields.Char(string='NGSign PDS URL', copy=False, help="URL to the Page de Signature for DigiGO/SSCD certificates")
+    ngsign_signer_id = fields.Many2one('res.users', string='NGSign Signer', copy=False, readonly=True,
+                                       help="User the NGSign transaction was created for (DigiGO / SSCD). "
+                                            "Only this person can sign it on the signing page.")
     ngsign_status = fields.Selection([
         ('draft', 'Draft'),
         ('pending_signature', 'Pending Signature'),
@@ -62,6 +65,7 @@ class AccountMove(models.Model):
             'ngsign_ttn_reference': False,
             'ngsign_ttn_qr_code': False,
             'ngsign_pds_url': False,
+            'ngsign_signer_id': False,
             'ngsign_status': 'draft',
             'ngsign_last_check': False,
             'ngsign_ttn_mode': False,
@@ -967,6 +971,7 @@ class AccountMove(models.Model):
                     
                     if pds_url:
                         write_vals['ngsign_pds_url'] = pds_url
+                        write_vals['ngsign_signer_id'] = signer.id
                     
                     move.write(write_vals)
                 else:
@@ -1043,6 +1048,61 @@ class AccountMove(models.Model):
                     error_msg += f"\n(Failed to extract debug info: {debug_e})"
             
             raise UserError(_("Failed to sign invoice(s): %s") % error_msg)
+
+    def _ngsign_transaction_moves(self):
+        """All invoices sharing this invoice's NGSign transaction (bulk signing)."""
+        self.ensure_one()
+        if not self.ngsign_transaction_uuid:
+            return self
+        return self.search([('ngsign_transaction_uuid', '=', self.ngsign_transaction_uuid)])
+
+    def action_ngsign_cancel_transaction(self):
+        """
+        Cancel the pending NGSign transaction of this invoice, on NGSign and in
+        Odoo, so that it can be created again (typically for another signer).
+        A transaction may cover several invoices: they are all reset.
+
+        :return: the invoices that were part of the transaction
+        """
+        self.ensure_one()
+        if self.ngsign_status != 'pending_signature':
+            raise UserError(_("Only a transaction awaiting signature can be cancelled. "
+                              "Current NGSign status of %s: %s") % (self.name, self.ngsign_status))
+        if not self.ngsign_transaction_uuid:
+            raise UserError(_("Invoice %s has no NGSign transaction.") % self.name)
+
+        moves = self._ngsign_transaction_moves()
+        signed = moves.filtered(lambda m: m.ngsign_status in ('signed_ngsign', 'TTN Signed'))
+        if signed:
+            raise UserError(_("The transaction also contains signed invoices (%s): it cannot be cancelled.")
+                            % ', '.join(signed.mapped('name')))
+
+        client = self._get_ngsign_client()
+        transaction_uuid = self.ngsign_transaction_uuid
+        try:
+            response = client.cancel_transaction(transaction_uuid)
+        except Exception as e:
+            raise UserError(_("Failed to cancel the NGSign transaction: %s") % str(e))
+        if isinstance(response, dict) and response.get('errorCode'):
+            raise UserError(_("NGSign refused to cancel the transaction: %s")
+                            % response.get('message', response.get('errorCode')))
+
+        previous_signer = self.ngsign_signer_id.name or _("unknown")
+        moves.write({
+            'ngsign_transaction_uuid': False,
+            'ngsign_invoice_uuid': False,
+            'ngsign_pds_url': False,
+            'ngsign_signer_id': False,
+            'ngsign_status': 'draft',
+            'ngsign_last_check': False,
+            'ngsign_ttn_mode': False,
+        })
+        moves._ngsign_cleanup_prepared_pdf()
+        for move in moves:
+            move.message_post(body=_("NGSign transaction %(uuid)s (signer: %(signer)s) cancelled by %(user)s.",
+                                     uuid=transaction_uuid, signer=previous_signer, user=self.env.user.name))
+        _logger.info(f"NGSign: Transaction {transaction_uuid} cancelled for {moves.mapped('name')}")
+        return moves
 
     def action_sign_ngsign(self):
         # Deprecated: Kept for backward compatibility if needed, but UI now calls JS action

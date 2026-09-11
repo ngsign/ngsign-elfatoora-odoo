@@ -148,6 +148,19 @@ class NGSignClient:
         response.raise_for_status()
         return response.json()
 
+    def cancel_transaction(self, transaction_uuid):
+        """
+        Cancel a transaction that has not been signed yet, with all its invoices.
+        Endpoint: POST /protected/invoice/transaction/cancel/{uuid}
+
+        :return: Response {message, errorCode}
+        """
+        url = f"{self.api_url}/protected/invoice/transaction/cancel/{transaction_uuid}"
+        headers = self._get_headers()
+        response = requests.post(url, headers=headers)
+        response.raise_for_status()
+        return response.json() if response.content else {}
+
     def generate_pds_url(self, transaction_uuid, base_url='https://sandbox.ng-sign.com/pds/#/teif/invoice/'):
         """
         Generate the Page de Signature (PDS) URL for a transaction.

@@ -1709,3 +1709,110 @@ msgstr "Aucun signataire sélectionné. Veuillez choisir un signataire."
 #: code:addons/ngsign_einvoice_odoo/models/ngsign_sign_options_wizard.py:0
 msgid "Please select a signer."
 msgstr "Veuillez sélectionner un signataire."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_account_move__ngsign_signer_id
+msgid "NGSign Signer"
+msgstr "Signataire NGSign"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_account_move__ngsign_signer_id
+msgid "User the NGSign transaction was created for (DigiGO / SSCD). Only this person can sign it on the signing page."
+msgstr "Utilisateur pour lequel la transaction NGSign a été créée (DigiGO / SSCD). Seule cette personne peut la signer sur la page de signature."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__current_signer_id
+msgid "Transaction Signer"
+msgstr "Signataire de la transaction"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_pds_options_wizard__action_type__restart
+msgid "Restart with another signer"
+msgstr "Recommencer avec un autre signataire"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__signer_id
+msgid "New Signer"
+msgstr "Nouveau signataire"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,help:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__signer_id
+msgid "The pending transaction is cancelled on NGSign and created again for this signer."
+msgstr "La transaction en attente est annulée sur NGSign puis recréée pour ce signataire."
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields,field_description:ngsign_einvoice_odoo.field_ngsign_pds_options_wizard__restart_delivery
+msgid "Then"
+msgstr "Puis"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_pds_options_wizard__restart_delivery__open
+msgid "Open the signing page"
+msgstr "Ouvrir la page de signature"
+
+#. module: ngsign_einvoice_odoo
+#: model:ir.model.fields.selection,name:ngsign_einvoice_odoo.selection__ngsign_pds_options_wizard__restart_delivery__email
+msgid "Send the link by email to the signer"
+msgstr "Envoyer le lien par email au signataire"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_pds_options_wizard_form
+msgid "Unknown: the transaction was created before the signer could be chosen. It was created for the user who launched it."
+msgstr "Inconnu : la transaction a été créée avant que le signataire puisse être choisi. Elle a été créée pour l'utilisateur qui l'a lancée."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_pds_options_wizard_form
+msgid "The pending transaction is cancelled on NGSign and a new one is created for the new signer. The current signing page link stops working."
+msgstr "La transaction en attente est annulée sur NGSign et une nouvelle est créée pour le nouveau signataire. Le lien actuel vers la page de signature cesse de fonctionner."
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_pds_options_wizard_form
+msgid "This transaction covers"
+msgstr "Cette transaction regroupe"
+
+#. module: ngsign_einvoice_odoo
+#: model_terms:ir.ui.view,arch_db:ngsign_einvoice_odoo.view_ngsign_pds_options_wizard_form
+msgid "invoices: all of them are cancelled and sent again together."
+msgstr "factures : elles sont toutes annulées puis renvoyées ensemble."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Only a transaction awaiting signature can be cancelled. Current NGSign status of %s: %s"
+msgstr "Seule une transaction en attente de signature peut être annulée. Statut NGSign actuel de %s : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Invoice %s has no NGSign transaction."
+msgstr "La facture %s n'a pas de transaction NGSign."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "The transaction also contains signed invoices (%s): it cannot be cancelled."
+msgstr "La transaction contient aussi des factures signées (%s) : elle ne peut pas être annulée."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "Failed to cancel the NGSign transaction: %s"
+msgstr "Échec de l'annulation de la transaction NGSign : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "NGSign refused to cancel the transaction: %s"
+msgstr "NGSign a refusé d'annuler la transaction : %s"
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "NGSign transaction %(uuid)s (signer: %(signer)s) cancelled by %(user)s."
+msgstr "Transaction NGSign %(uuid)s (signataire : %(signer)s) annulée par %(user)s."
+
+#. module: ngsign_einvoice_odoo
+#. odoo-python
+#: code:addons/ngsign_einvoice_odoo/models/account_move.py:0
+msgid "unknown"
+msgstr "inconnu"
